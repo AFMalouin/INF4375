@@ -1,5 +1,5 @@
 var http = require('http');
-var convertCsvData = require('../middlewares/csv-to-json.js').convertCsvData;
+var csvToJson = require('../helpers/format-helpers.js').csvToJson;
 var db = require('../db/db.js');
 var _ = require('underscore');
 
@@ -31,7 +31,7 @@ exports.fetchData = function(err, callback) {
       // invoqué.
       result.on('end', function () {
         var data = chunks.join('');
-        convertCsvData(err, data, function(err, parsedEntries) {
+        csvToJson(err, data, function(err, parsedEntries) {
           normalize(err, parsedEntries, function(err, normalizedDocuments){
             if (normalizedDocuments.length > 0){
               db.save(err, normalizedDocuments, callback);

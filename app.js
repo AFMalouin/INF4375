@@ -6,26 +6,23 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var scheduler = require('node-schedule');
 
-var mongoUtil = require('./helpers/mongoUtil.js');
+ var db = require('./db/db.js');
 
+// Controllers
 var index = require('./controllers/index.js');
 var users = require('./controllers/users.js');
 var doc = require('./controllers/doc.js');
 var installations = require('./controllers/installations.js');
+var badCondition = require('./controllers/badCondition.js');
 
-
-//TODO: Remove these routes
-var fetchPools = require('./controllers/fetch-pools.js');
-var fetchRinks = require('./controllers/fetch-rinks.js');
-var fetchSlides = require('./controllers/fetch-slides.js');
-
+// Models
 var pool = require('./models/pool.js')
 var rink = require('./models/rink.js')
 var slide = require('./models/slide.js')
 
 var app = express();
 
-mongoUtil.connectToServer(function(err) {
+db.connectToServer(function(err) {
 
   // view engine setup
   app.set('views', path.join(__dirname, 'views'));
@@ -41,10 +38,8 @@ mongoUtil.connectToServer(function(err) {
   app.use('/', index);
   app.use('/users', users);
   app.use('/doc', doc);
-  app.use('/fetchpools', fetchPools);
-  app.use('/fetchrinks', fetchRinks);
-  app.use('/fetchslides', fetchSlides);
   app.use('/installations', installations);
+  app.use('/badCondition', badCondition);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {
@@ -68,17 +63,17 @@ mongoUtil.connectToServer(function(err) {
 
   pool.fetchData(null, function(err){
     if (err) {
-      console.log('Erreur dans le cron de pool: ' + err);
+      console.log('Erreur dans le fetch de pool: ' + err);
     }
   });
   rink.fetchData(null, function(err){
     if (err) {
-      console.log('Erreur dans le cron de rink: ' + err);
+      console.log('Erreur dans le fetch de rink: ' + err);
     }
   });
   slide.fetchData(null, function(err){
     if (err) {
-      console.log('Erreur dans le cron de slide: ' + err);
+      console.log('Erreur dans le fetch de slide: ' + err);
     }
   });
 

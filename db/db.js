@@ -1,7 +1,21 @@
-var mongoUtil = require('../helpers/mongoUtil.js');
+var MongoClient = require('mongodb').MongoClient;
+
+var _db;
+
+getDb = function() {
+  return _db;
+}
+
+exports.connectToServer = function( callback ) {
+  // https://stackoverflow.com/a/24634454
+  MongoClient.connect( "mongodb://localhost:27017/tp1", function( err, db ) {
+    _db = db;
+    return callback( err );
+  });
+}
 
 exports.save = function(err, data, callback) {
-  var db = mongoUtil.getDb();
+  var db = getDb();
 
   if (data.length <= 0){
     callback(err);
@@ -15,7 +29,7 @@ exports.save = function(err, data, callback) {
         if (err) {
           console.log("Erreur lors de l'insertion de " + data, err);
         } else {
-            console.log(data.length + " " + collection + " added to the db");
+          console.log(data.length + " documents added to the db in installations");
         }
         callback(err);
       });
@@ -24,7 +38,7 @@ exports.save = function(err, data, callback) {
 }
 
 exports.exists = function(err, document, callback) {
-  var db = mongoUtil.getDb();
+  var db = getDb();
 
   db.collection("installations", function (err, collection) {
     if (err) {
@@ -46,7 +60,7 @@ exports.exists = function(err, document, callback) {
 }
 
 exports.find = function(err, query, callback) {
-  var db = mongoUtil.getDb();
+  var db = getDb();
 
   db.collection("installations", function (err, collection) {
     if (err) {

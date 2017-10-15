@@ -1,5 +1,5 @@
 var http = require('http');
-var convertXmlData = require('../middlewares/xml-to-json.js').convertXmlData;
+var xmlToJson = require('../helpers/format-helpers.js').xmlToJson;
 var db = require('../db/db.js');
 var _ = require('underscore');
 
@@ -32,7 +32,7 @@ exports.fetchData = function(err, callback) {
       result.on('end', function () {
         var attributes = ['patinoires', 'patinoire'];
         var data = chunks.join('');
-        convertXmlData(null, data, attributes, function(err, parsedEntries) {
+        xmlToJson(null, attributes, data, function(err, parsedEntries) {
           normalize(err, parsedEntries, function(err, normalizedDocuments){
             if (normalizedDocuments.length > 0){
               db.save(err, normalizedDocuments, callback);
