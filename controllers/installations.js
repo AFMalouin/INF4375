@@ -3,9 +3,26 @@ var router = express.Router();
 var installation = require('../models/installation.js');
 
 router.get('/', function(req, res, next) {
-  query = {borough : req.query.arrondissement};
-  installation.find(null, query, function(err, result){
-    res.send(result);
+  var params = {};
+
+  if (req.query.arrondissement){
+    params.borough = req.query.arrondissement;
+  }
+  if (req.query._id){
+    params._id = req.query._id;
+  }
+  if (req.query.condition){
+    params.condition = req.query.condition;
+  }
+
+  installation.find(null, params, {}, function(err, data){
+    if(req.query.ajax === 'true') {
+      res.render('search-results', {results: data});
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      
+      res.send(JSON.stringify(data));
+    }
   });
 });
 

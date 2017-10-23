@@ -1,4 +1,5 @@
 var MongoClient = require('mongodb').MongoClient;
+var ObjectID = require('mongodb').ObjectID;
 
 var _db;
 
@@ -59,7 +60,7 @@ exports.exists = function(err, document, callback) {
   });
 }
 
-exports.find = function(err, query, callback) {
+exports.find = function(err, query, fields, callback) {
   var db = getDb();
 
   db.collection("installations", function (err, collection) {
@@ -67,7 +68,11 @@ exports.find = function(err, query, callback) {
       console.log("Erreur avec la base de données.", err);
       db.close();
     } else {
-      collection.find(query, function (err, result) {
+      if (typeof(query._id) !== 'undefined'){
+        query._id = ObjectID(query._id);
+      }
+      collection.find(query, fields, function (err, result) {
+        console.log("IN DB!:" + JSON.stringify(fields));
         if (err) {
           db.close();
           console.log("Erreur lors de la recherche.", err);

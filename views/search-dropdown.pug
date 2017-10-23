@@ -1,0 +1,12 @@
+block search-dropdown
+  if !installationNames
+    p wat
+  else
+    form(onsubmit="return searchByDropdown()")
+      select#search-dropdown
+        each name in installationNames
+          option(value=name._id) #{name.name}
+      br
+      button(onclick="searchByDropdown()" type='button') Chercher
+      br
+  

@@ -3,7 +3,8 @@ var router = express.Router();
 
 var routes = {routes: [{name :'index', url :'/'},
                        {name :'users', url :'/users'},
-                       {name :'doc', url :'/doc'}]};
+                       {name :'doc', url :'/doc'},
+                       {name :'installations', url :'/installations?arrondissement="arrondissement"'}]};
 
 
 /* GET users listing. */

@@ -1,9 +1,13 @@
 var express = require('express');
 var router = express.Router();
+var installation = require('../models/installation.js');
 
-/* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  installation.find(null, {}, {"_id": "true", "name": "true", "condition": "false", "borough": "false"}, function(err, installationNames){
+
+    console.log(JSON.stringify(installationNames));
+    res.render('layout', {title: "Mon appu", installationNames: installationNames});
+  });
 });
 
 module.exports = router;
