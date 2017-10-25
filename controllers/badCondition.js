@@ -1,7 +1,7 @@
-var sortJsonArray = require('sort-json-array');
 var express = require('express');
 var router = express.Router();
 var installation = require('../models/installation.js');
+var sort = require('../helpers/sortJson.js').sortJson;
 var jsonToXml = require('../helpers/format-helpers.js').jsonToXml;
 var jsonToCsv = require('../helpers/format-helpers.js').jsonToCsv;
 
@@ -29,10 +29,5 @@ router.get('/', function(req, res, next) {
     });
   });
 });
-
-var sort = function(err, data, callback){
-  var result = sortJsonArray(data, 'name');
-  callback(err, result);
-}
 
 module.exports = router;

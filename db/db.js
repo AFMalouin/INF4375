@@ -9,7 +9,7 @@ getDb = function() {
 
 exports.connectToServer = function( callback ) {
   // https://stackoverflow.com/a/24634454
-  MongoClient.connect( "mongodb://localhost:27017/tp1", function( err, db ) {
+  MongoClient.connect( "mongodb://heroku_wdk79gdg:avd3h0ujeb8bbrjjk4nbectibo@ds231715.mlab.com:31715/heroku_wdk79gdg", function( err, db ) {
     _db = db;
     return callback( err );
   });
@@ -72,7 +72,6 @@ exports.find = function(err, query, fields, callback) {
         query._id = ObjectID(query._id);
       }
       collection.find(query, fields, function (err, result) {
-        console.log("IN DB!:" + JSON.stringify(fields));
         if (err) {
           db.close();
           console.log("Erreur lors de la recherche.", err);
