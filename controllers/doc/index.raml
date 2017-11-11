@@ -1,0 +1,81 @@
+#%RAML 1.0
+---
+title: Documentation
+baseUri: http://localhost:3000
+version: 1
+
+/api:
+  /installations:
+    get:
+      description: Fournir la liste des installations.
+      queryParameters:
+        arrondissement:
+          description: Une chaîne de caractères qui doit représenter le nom d'un arrondissement.
+          type: string
+          required: false
+        condition:
+          description: Une chaîne de caractères qui doit représenter la condition d'une installation
+          type: string
+          required: false
+      responses:
+        200:
+          description: La liste des installations a été correctement envoyée.
+          body:
+            application/json:
+              type: !include ../schemas/multiple-installations-output.json
+        500:
+          description: Une erreur interne s'est produite.
+    /{id}:
+      get:
+        description: Fournir l'information sur une installation selon son identifiant.
+        responses: 
+          200:
+            description: Les données de l'installation ont étés correctement envoyées.
+            body:
+              application/json:
+                type: !include ../schemas/single-installation-output.json
+          500:
+            description: Une erreur interne s'est produite.
+    /conditions:
+    get:
+      description: Route non implementée.
+      responses:
+        200:
+          description: hello world!
+        501:
+          description: Non implementé. Essayez plutôt&nbsp: /conditions/mauvaisesconditions
+    /mauvaisesconditions:
+      get:
+        description: Fournir la liste des installations en mauvaise condition en HTML.
+        responses: 
+          200:
+            description: La liste des installations a été correctement envoyée.
+          500:
+            description: Une erreur interne s'est produite
+      /mauvaisesconditions.json:
+      get:
+        description: Fournir la liste des installations en mauvaise condition en JSON.
+        responses: 
+          200:
+            description: La liste des installations a été correctement envoyée.
+            body:
+              application/json:
+                type: !include ../schemas/multiple-installations-output.json
+          500:
+            description: Une erreur interne s'est produite
+      /mauvaisesconditions.xml:
+      get:
+        description: Fournir la liste des installations en mauvaise condition en XML.
+        responses: 
+          200:
+            description: La liste des installations a été correctement envoyée.
+          500:
+            description: Une erreur interne s'est produite
+      /mauvaisesconditions.csv:
+      get:
+        description: Fournir la liste des installations en mauvaise condition en CSV.
+        responses: 
+          200:
+            description: La liste des installations a été correctement envoyée.
+          500:
+            description: Une erreur interne s'est produite

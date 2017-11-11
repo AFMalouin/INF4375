@@ -8,9 +8,7 @@ router.get('/', function(req, res, next) {
   if (req.query.arrondissement){
     params.borough = req.query.arrondissement;
   }
-  if (req.query._id){
-    params._id = req.query._id;
-  }
+
   if (req.query.condition){
     params.condition = req.query.condition;
   }
@@ -20,7 +18,23 @@ router.get('/', function(req, res, next) {
       res.render('search-results', {results: data});
     } else {
       res.setHeader('Content-Type', 'application/json');
-      
+      res.send(JSON.stringify(data));
+    }
+  });
+});
+
+router.get('/:id', function(req, res, next) {
+  var params = {};
+
+  if (req.params.id){
+    params._id = req.params.id;
+  }
+
+  installation.find(null, params, {}, function(err, data){
+    if(req.query.ajax === 'true') {
+      res.render('search-results', {results: data});
+    } else {
+      res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(data));
     }
   });

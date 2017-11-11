@@ -1,15 +1,17 @@
 var express = require('express');
+var raml2html = require('raml2html');
 var router = express.Router();
 
-var routes = {routes: [{name :'index', url :'/'},
-                       {name :'users', url :'/users'},
-                       {name :'doc', url :'/doc'},
-                       {name :'installations', url :'/installations?arrondissement="arrondissement"'}]};
-
-
-/* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.render('doc', routes);
+  const config = raml2html.getConfigForTheme();
+  raml2html.render("controllers/doc/index.raml", config).then(function(html) {
+    // Succes
+    res.send(html);
+  }, function(err){
+    // Erreur
+    console.log(err);
+    res.sendStatus(500);
+  });
 });
 
 module.exports = router;

@@ -20,6 +20,7 @@
     "morgan": "~1.9.0",
     "node-schedule": "^1.2.5",
     "pug": "2.0.0-beta11",
+    "raml2html": "^6.4.1",
     "serve-favicon": "~2.4.5",
     "sort-json-array": "^0.1.7",
     "underscore": "^1.8.3",

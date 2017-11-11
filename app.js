@@ -39,7 +39,7 @@ db.connectToServer(function(err) {
   app.use('/users', users);
   app.use('/doc', doc);
   app.use('/installations', installations);
-  app.use('/badCondition', badCondition);
+  app.use('/conditions', badCondition);
 
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {

@@ -69,7 +69,12 @@ exports.find = function(err, query, fields, callback) {
       db.close();
     } else {
       if (typeof(query._id) !== 'undefined'){
-        query._id = ObjectID(query._id);
+        var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+        if (checkForHexRegExp.test(query._id)){
+          query._id = ObjectID(query._id);
+        } else {
+          callback("Format de id invalide");
+        }
       }
       collection.find(query, fields, function (err, result) {
         if (err) {
