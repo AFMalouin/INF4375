@@ -1,13 +1,126 @@
 var express = require('express');
-var router = express.Router();
+var raml2html = require('raml2html');
 var installation = require('../models/installation.js');
-var sort = require('../helpers/sortJson.js').sortJson;
+var router = express.Router();
 
+var installation = require('../models/installation.js');
 router.get('/', function(req, res, next) {
-  installation.find(null, {}, {"_id": "true", "name": "true", "condition": "false", "borough": "false"}, function(err, installationNames){
-    sort(err, installationNames, function(err, installationNames){
-      res.render('layout', {title: "Mon app", installationNames: installationNames});
-    })
+  var options = {
+    params: {},
+    format: "json",
+    fields: {"_id": "true",
+             "name": "true",
+             "condition": "false",
+             "borough": "false"}
+  };
+
+  installation.find(null, options, function(err, data){
+    res.render('layout', {title: "Mon app", installationNames: data});
+  });
+
+});
+
+router.get('/doc', function(req, res, next) {
+  const config = raml2html.getConfigForTheme();
+  raml2html.render("controllers/doc/index.raml", config).then(function(html) {
+    // Succes
+    res.send(html);
+  }, function(err){
+    // Erreur
+    console.log(err);
+    res.sendStatus(500);
+  });
+});
+
+router.get('/installations', function(req, res, next) {
+  var params = {};
+  var fields = [];
+
+  if (req.query.arrondissement){
+    params.borough = req.query.arrondissement;
+  }
+
+  if (req.query.condition){
+    params.condition = req.query.condition;
+  }
+
+  if (req.query.condition){
+    params.condition = req.query.condition;
+  }
+
+  var options = {
+    params: params,
+    format: "json",
+    fields: []
+  };
+
+  installation.find(null, options, function(err, data){
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(data));
+  });
+});
+
+router.get('/installations/:id', function(req, res, next) {
+  var options = {
+    params: {_id: req.params.id},
+    format: "json",
+    fields: []
+  };
+
+  installation.find(null, options, function(err, data){
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(data));
+  });
+});
+
+router.get('/mauvaisesconditions.json', function(req, res, next) {
+  var options = {
+    params: {condition : "Mauvaise"},
+    format: "json",
+    fields: {}
+  };
+
+  installation.find(null, options, function(err, data){
+    if(err){
+      console.log("Erreur: "+ err);
+    } else {
+      res.set('Content-Type', 'application/json');
+      res.send(data);
+    }
+  });
+});
+
+router.get('/mauvaisesconditions.csv', function(req, res, next) {
+  var options = {
+    params: {condition : "Mauvaise"},
+    format: "csv",
+    fields: {}
+  };
+
+  installation.find(null, options, function(err, data){
+    if(err){
+      console.log("Erreur: "+ err);
+    } else {
+      res.set('Content-Type', 'text/csv');
+      res.send(data);
+    }
+  });
+});
+
+router.get('/mauvaisesconditions.xml', function(req, res, next) {
+  var options = {
+    params: {condition : "Mauvaise"},
+    format: "xml",
+    fields: {}
+  };
+
+  installation.find(null, options, function(err, data){
+    if(err){
+      console.log("Erreur: "+ err);
+    } else {
+      res.set('Content-Type', 'text/xml');
+      res.send(data);
+    }
   });
 });
 

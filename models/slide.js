@@ -59,7 +59,7 @@ var normalize = function(err, data, callback){
   var counter = data.length;
   _.each(data, function(element, index, list){
     var normalizedDocument = {
-      type : "slide",
+      type : 'Glissade',
       name : element.nom,
       condition : element.condition,
       borough : element.arrondissement.nom_arr

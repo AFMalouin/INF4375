@@ -58,11 +58,12 @@ var normalize = function(err, data, callback){
   var counter = data.length;
   _.each(data, function(element, index, list){
     var normalizedDocument = {
-      type : "pool",
+      type : 'Piscine',
       name : element.NOM,
       description : element.TYPE,
       borough : element.ARRONDISSE,
-      address : element.ADRESSE
+      address : element.ADRESSE,
+      condition : 'N/A'
     }
     db.exists(err, normalizedDocument, function(err, document){
       if (document == null){

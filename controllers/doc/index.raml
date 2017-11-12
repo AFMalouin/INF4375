@@ -36,46 +36,30 @@ version: 1
                 type: !include ../schemas/single-installation-output.json
           500:
             description: Une erreur interne s'est produite.
-    /conditions:
+  /mauvaisesconditions.json:
     get:
-      description: Route non implementée.
-      responses:
+      description: Fournir la liste des installations en mauvaise condition en JSON.
+      responses: 
         200:
-          description: hello world!
-        501:
-          description: Non implementé. Essayez plutôt&nbsp: /conditions/mauvaisesconditions
-    /mauvaisesconditions:
-      get:
-        description: Fournir la liste des installations en mauvaise condition en HTML.
-        responses: 
-          200:
-            description: La liste des installations a été correctement envoyée.
-          500:
-            description: Une erreur interne s'est produite
-      /mauvaisesconditions.json:
-      get:
-        description: Fournir la liste des installations en mauvaise condition en JSON.
-        responses: 
-          200:
-            description: La liste des installations a été correctement envoyée.
-            body:
-              application/json:
-                type: !include ../schemas/multiple-installations-output.json
-          500:
-            description: Une erreur interne s'est produite
-      /mauvaisesconditions.xml:
-      get:
-        description: Fournir la liste des installations en mauvaise condition en XML.
-        responses: 
-          200:
-            description: La liste des installations a été correctement envoyée.
-          500:
-            description: Une erreur interne s'est produite
-      /mauvaisesconditions.csv:
-      get:
-        description: Fournir la liste des installations en mauvaise condition en CSV.
-        responses: 
-          200:
-            description: La liste des installations a été correctement envoyée.
-          500:
-            description: Une erreur interne s'est produite
+          description: La liste des installations a été correctement envoyée.
+          body:
+            application/json:
+              type: !include ../schemas/multiple-installations-output.json
+        500:
+          description: Une erreur interne s'est produite
+  /mauvaisesconditions.xml:
+    get:
+      description: Fournir la liste des installations en mauvaise condition en XML.
+      responses: 
+        200:
+          description: La liste des installations a été correctement envoyée.
+        500:
+          description: Une erreur interne s'est produite
+  /mauvaisesconditions.csv:
+    get:
+      description: Fournir la liste des installations en mauvaise condition en CSV.
+      responses: 
+        200:
+          description: La liste des installations a été correctement envoyée.
+        500:
+          description: Une erreur interne s'est produite

@@ -1,5 +1,7 @@
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
+var sortJson = require('../helpers/sortJson.js').sortJson;
+var trimEntries = require('../helpers/sanitize-entries.js').trim;
 
 var _db;
 
@@ -7,11 +9,12 @@ getDb = function() {
   return _db;
 }
 
-exports.connectToServer = function( callback ) {
+exports.connectToServer = function(callback) {
   // https://stackoverflow.com/a/24634454
-  MongoClient.connect( "mongodb://heroku_wdk79gdg:avd3h0ujeb8bbrjjk4nbectibo@ds231715.mlab.com:31715/heroku_wdk79gdg", function( err, db ) {
+  //MongoClient.connect( "mongodb://heroku_wdk79gdg:avd3h0ujeb8bbrjjk4nbectibo@ds231715.mlab.com:31715/heroku_wdk79gdg", function( err, db ) {
+  MongoClient.connect( "mongodb://localhost:27017/tp1", function( err, db ) { // TODO put switch in config
     _db = db;
-    return callback( err );
+    return callback(err);
   });
 }
 
@@ -26,13 +29,15 @@ exports.save = function(err, data, callback) {
       console.log("Erreur avec la base de données.", err);
       db.close();
     } else {
-      collection.insert(data, function (err, result) {
-        if (err) {
-          console.log("Erreur lors de l'insertion de " + data, err);
-        } else {
-          console.log(data.length + " documents added to the db in installations");
-        }
-        callback(err);
+      trimEntries(err, data, function(err, data){
+        collection.insert(data, function (err, result) {
+          if (err) {
+            console.log("Erreur lors de l'insertion de " + data, err);
+          } else {
+            console.log(data.length + " documents added to the db in installations");
+          }
+          callback(err);
+        });
       });
     }
   });
@@ -85,7 +90,9 @@ exports.find = function(err, query, fields, callback) {
           var results = result.toArray();
           results
             .then(function (res) {
-              callback(err, res);
+              sortJson(err, res, function(err, data){
+                callback(err, data);
+              });
             })
             .catch(function (err) {
               callback(err);

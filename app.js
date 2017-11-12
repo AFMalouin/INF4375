@@ -10,10 +10,6 @@ var scheduler = require('node-schedule');
 
 // Controllers
 var index = require('./controllers/index.js');
-var users = require('./controllers/users.js');
-var doc = require('./controllers/doc.js');
-var installations = require('./controllers/installations.js');
-var badCondition = require('./controllers/badCondition.js');
 
 // Models
 var pool = require('./models/pool.js')
@@ -36,11 +32,7 @@ db.connectToServer(function(err) {
   app.use(express.static(path.join(__dirname, 'public')));
 
   app.use('/', index);
-  app.use('/users', users);
-  app.use('/doc', doc);
-  app.use('/installations', installations);
-  app.use('/conditions', badCondition);
-
+  
   // catch 404 and forward to error handler
   app.use(function(req, res, next) {
     var err = new Error('Not Found');

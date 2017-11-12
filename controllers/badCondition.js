@@ -1,13 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var installation = require('../models/installation.js');
-var sort = require('../helpers/sortJson.js').sortJson;
+var sortJson = require('../helpers/sortJson.js').sortJson;
 var jsonToXml = require('../helpers/format-helpers.js').jsonToXml;
 var jsonToCsv = require('../helpers/format-helpers.js').jsonToCsv;
 
-router.get('/', function(req, res, next) {
-  res.status(501).send('Non implementé. Essayez plutôt&nbsp: /conditions/mauvaisesconditions')
-});
 
 // HTTP
 router.get('/mauvaisesconditions', function(req, res, next) {
@@ -49,7 +46,7 @@ var findAndSort = function(err, callback){
     if (err){
       console.log("Erreur dans la recherche:" + err);
     }
-    sort(err, result, function(err, data){
+    sortJson(err, result, function(err, data){
       callback(err, data);
     });
   });

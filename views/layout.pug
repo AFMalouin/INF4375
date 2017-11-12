@@ -2,11 +2,32 @@ doctype html
 html
   head
     title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
+    script(src='/bootstrap/js/bootstrap.js')
     script(src="/javascripts/scripts.js")
   body
     block content
-    include header
-    include search-text
-    include search-dropdown
-    #search-results
+    div.container-fluid
+      div
+        h1.page-header= title
+      div
+        h3 Recherche par arrondissement
+        form(onsubmit="return searchByText()")
+          div.row
+            div.form-group.col-md-4
+                label(for='borough-field') Arrondissement : 
+                input#borough-field.form-control(type='text')
+          button(onclick="searchByText()" type='button').btn.btn-default Chercher
+      div
+        h3 Recherche par nom
+        form(onsubmit="return searchByDropdown()")
+          div.row
+            div.form-group.col-md-4
+              select#search-dropdown.form-control
+                each name in installationNames
+                  option(value=name._id) #{name.name}
+          button(onclick="searchByDropdown()" type='button').btn.btn-default Chercher
+    
+      div
+        table#search-results.table.table-striped(style={visibility: 'hidden'})
