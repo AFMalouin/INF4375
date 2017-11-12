@@ -9,9 +9,10 @@ router.get('/', function(req, res, next) {
     params: {},
     format: "json",
     fields: {"_id": "true",
-             "name": "true",
-             "condition": "false",
-             "borough": "false"}
+             "Nom": "true",
+             "Condition": "false",
+             "Arrondissement": "false",
+             "Addresse": "false"}
   };
 
   installation.find(null, options, function(err, data){
@@ -37,15 +38,11 @@ router.get('/installations', function(req, res, next) {
   var fields = [];
 
   if (req.query.arrondissement){
-    params.borough = req.query.arrondissement;
+    params.Arrondissement = req.query.arrondissement;
   }
 
   if (req.query.condition){
-    params.condition = req.query.condition;
-  }
-
-  if (req.query.condition){
-    params.condition = req.query.condition;
+    params.Condition = req.query.condition;
   }
 
   var options = {
@@ -75,7 +72,7 @@ router.get('/installations/:id', function(req, res, next) {
 
 router.get('/mauvaisesconditions.json', function(req, res, next) {
   var options = {
-    params: {condition : "Mauvaise"},
+    params: {Condition : "Mauvaise"},
     format: "json",
     fields: {}
   };
@@ -92,7 +89,7 @@ router.get('/mauvaisesconditions.json', function(req, res, next) {
 
 router.get('/mauvaisesconditions.csv', function(req, res, next) {
   var options = {
-    params: {condition : "Mauvaise"},
+    params: {Condition : "Mauvaise"},
     format: "csv",
     fields: {}
   };
@@ -109,7 +106,7 @@ router.get('/mauvaisesconditions.csv', function(req, res, next) {
 
 router.get('/mauvaisesconditions.xml', function(req, res, next) {
   var options = {
-    params: {condition : "Mauvaise"},
+    params: {Condition : "Mauvaise"},
     format: "xml",
     fields: {}
   };

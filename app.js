@@ -51,46 +51,35 @@ db.connectToServer(function(err) {
     res.render('error');
   });
 
-  // Set crons
+  fetchData(err, db);
 
-  pool.fetchData(null, function(err){
-    if (err) {
-      console.log('Erreur dans le fetch de pool: ' + err);
-    }
-  });
-  rink.fetchData(null, function(err){
-    if (err) {
-      console.log('Erreur dans le fetch de rink: ' + err);
-    }
-  });
-  slide.fetchData(null, function(err){
-    if (err) {
-      console.log('Erreur dans le fetch de slide: ' + err);
-    }
-  });
-
+  // Set cron
   var rule = new scheduler.RecurrenceRule();
-  rule.hour = 12;
-  rule.dayOfWeek = new scheduler.Range(0,6);
-
+  rule.hour = 00;
 
   scheduler.scheduleJob(rule, function(){
+    fetchData(err, db);
+  });
+});
+
+var fetchData = function(err, db){
+  db.removeAllInstallations(err, function(err){
     pool.fetchData(null, function(err){
       if (err) {
-        console.log('Erreur dans le cron de pool: ' + err);
+        console.log('Erreur dans le fetch de pool: ' + err);
       }
     });
     rink.fetchData(null, function(err){
       if (err) {
-        console.log('Erreur dans le cron de rink: ' + err);
+        console.log('Erreur dans le fetch de rink: ' + err);
       }
     });
     slide.fetchData(null, function(err){
       if (err) {
-        console.log('Erreur dans le cron de slide: ' + err);
+        console.log('Erreur dans le fetch de slide: ' + err);
       }
     });
   });
-});
+}
 
 module.exports = app;

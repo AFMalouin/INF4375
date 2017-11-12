@@ -18,9 +18,9 @@ function search(url){
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         var installations = JSON.parse(xhr.responseText);
-        var trHTML = '<thead><tr><th>Type d\'installation</th><th>Nom</th><th>Condition</th><th>Cartier</th></tr></thead><tbody>';
+        var trHTML = '<thead><tr><th>Type d\'installation</th><th>Nom</th><th>Arrondissement</th><th>Addresse</th><th>Condition</th></tr></thead><tbody>';
         $.each(installations, function (i, installation){
-          trHTML += '<tr><td>' + installation.type + '</td><td>' + installation.name + '</td><td>' + installation.condition + '</td><td>' + installation.borough + '</td></tr>';
+          trHTML += '<tr><td>' + installation.Type + '</td><td>' + installation.Nom + '</td><td>' + installation.Arrondissement + '</td><td>' + installation.Addresse + '</td><td>' + installation.Condition + '</td></tr>';
         });
         trHTML += '</tbody>'
         $('#search-results').html(trHTML)
@@ -34,3 +34,9 @@ function search(url){
 
   return false;
 }
+
+$(document).ready(function() {
+  $("form").submit(function(e){
+      e.preventDefault(e);
+  });
+});

@@ -14,7 +14,7 @@ exports.find = function(err, options, callback) {
         callback(err, result);
       });
     } else if (options.format === "csv") {
-     jsonToCsv(err, fields, data, function(err, result){
+     jsonToCsv(err, data, function(err, result){
         callback(err, result);
       });
     } else if (options.format === "json") {

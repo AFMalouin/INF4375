@@ -56,22 +56,19 @@ exports.fetchData = function(err, callback) {
 
 var normalize = function(err, data, callback){
   var normalizedDocuments = [];
-  var counter = data.length;
+  var remainingDocuments = data.length;
   _.each(data, function(element, index, list){
     var normalizedDocument = {
-      type : 'Arena',
-      name : element.nom,
-      condition : element.condition,
-      borough : element.arrondissement.nom_arr
+      Type : 'Arena',
+      Nom : element.nom,
+      Condition : element.condition,
+      Arrondissement : element.arrondissement.nom_arr,
+      Addresse: 'N/A'
     }
-    db.exists(err, normalizedDocument, function(err, document){
-      if (document == null){
-        normalizedDocuments.push(normalizedDocument);
-      }
-      counter = counter - 1;
-      if (counter == 0){
-        callback(err, normalizedDocuments);
-      }
-    });
+    normalizedDocuments.push(normalizedDocument);
+    remainingDocuments -= 1;
+    if (remainingDocuments == 0){
+      callback(err, normalizedDocuments);
+    }
   });
 }

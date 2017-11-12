@@ -2,6 +2,7 @@ var xml2js = require('xml2js');
 var csv = require('csvtojson');
 var js2xmlparser = require("js2xmlparser");
 var json2csv = require('json2csv');
+var _ = require('underscore');
 
 exports.xmlToJson = function(err, attributes, data, callback) {
   var parser = new xml2js.Parser({explicitArray : false});
@@ -32,16 +33,12 @@ exports.jsonToXml = function(err, data, callback) {
           encoding: "UTF-8"
       }
     };
-  
-    //Weird hack
-    var data = (JSON.stringify(data));
-    var data = JSON.parse(data);
-  
     var xmlEntries = js2xmlparser.parse("installation", data, options);
     callback(err, xmlEntries);
   }
 
-exports.jsonToCsv = function(err, fields, data, callback) {
+exports.jsonToCsv = function(err, data, callback) {
+  fields = _.keys(data[0]);
   var csvEntries = json2csv({data: data, fields: fields});
   callback(err, csvEntries);
 }

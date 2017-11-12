@@ -55,24 +55,20 @@ exports.fetchData = function(err, callback) {
 
 var normalize = function(err, data, callback){
   var normalizedDocuments = [];
-  var counter = data.length;
+  var remainingDocuments = data.length;
   _.each(data, function(element, index, list){
     var normalizedDocument = {
-      type : 'Piscine',
-      name : element.NOM,
-      description : element.TYPE,
-      borough : element.ARRONDISSE,
-      address : element.ADRESSE,
-      condition : 'N/A'
+      Type : 'Piscine',
+      Nom : element.NOM,
+      Description : element.TYPE,
+      Arrondissement : element.ARRONDISSE,
+      Addresse : element.ADRESSE,
+      Condition : 'N/A'
     }
-    db.exists(err, normalizedDocument, function(err, document){
-      if (document == null){
-        normalizedDocuments.push(normalizedDocument);
-      }
-      counter = counter - 1;
-      if (counter == 0){
-        callback(err, normalizedDocuments);
-      }
-    });
+    normalizedDocuments.push(normalizedDocument);
+    remainingDocuments -= 1;
+    if (remainingDocuments == 0){
+      callback(err, normalizedDocuments);
+    }
   });
 }

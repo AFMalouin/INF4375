@@ -1,5 +1,6 @@
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
+var _ = require('underscore');
 var sortJson = require('../helpers/sortJson.js').sortJson;
 var trimEntries = require('../helpers/sanitize-entries.js').trim;
 
@@ -34,32 +35,10 @@ exports.save = function(err, data, callback) {
           if (err) {
             console.log("Erreur lors de l'insertion de " + data, err);
           } else {
-            console.log(data.length + " documents added to the db in installations");
+            console.log(data.length + " " + data[0].Type +"(s) ajouté(s)");
           }
           callback(err);
         });
-      });
-    }
-  });
-}
-
-exports.exists = function(err, document, callback) {
-  var db = getDb();
-
-  db.collection("installations", function (err, collection) {
-    if (err) {
-      console.log("Erreur avec la base de données.", err);
-      db.close();
-    } else {
-      fields = Object.keys(document);
-      collection.findOne(document, fields, function (err, document) {
-        if (err) {
-          db.close()
-          console.log("Erreur lors de la recherche.", err);
-          callback(err);
-        } else {
-          callback(err, document);
-        }
       });
     }
   });
@@ -90,15 +69,33 @@ exports.find = function(err, query, fields, callback) {
           var results = result.toArray();
           results
             .then(function (res) {
-              sortJson(err, res, function(err, data){
-                callback(err, data);
+              stringnifyIds(err, res, function(err, data){
+                sortJson(err, res, function(err, data){
+                  callback(err, data);
+                });
               });
-            })
-            .catch(function (err) {
-              callback(err);
-            });
+          }).catch(function (err) {
+            callback(err);
+          });
         }
       });
     }
   });
+}
+
+exports.removeAllInstallations = function(err, callback){
+  var db = getDb();
+  db.collection("installations", function (err, collection) {
+    collection.remove();
+  });
+  callback(err);
+}
+
+var stringnifyIds = function(err, data, callback) {
+  for (var i = 0; i < data.length; i++) {
+    if (_.has(data[i], '_id')){
+      data[i]._id =  data[i]._id.toString();
+    }
+  }
+  callback(err, data);
 }
