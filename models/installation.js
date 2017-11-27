@@ -6,7 +6,7 @@ var jsonToCsv = require('../helpers/format-helpers.js').jsonToCsv;
 exports.find = function(err, options, callback) {
   db.find(err, options.params, options.fields, function(err, data){
     if(err){
-      console.log("Erreur: "+ err); 
+      callback(err);
     }
 
     if (options.format === "xml") {
@@ -20,7 +20,10 @@ exports.find = function(err, options, callback) {
     } else if (options.format === "json") {
       callback(err, data);
     } else {
-      callback("501");
+      err = new Error('Format de fichier non reconnu: ' + options.format);
+      err.status = 400;
+      console.log(err);
+      callback(err);
     }
   });
 }

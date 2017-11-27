@@ -1,3 +1,4 @@
+var config = require('../config.js');
 var express = require('express');
 var raml2html = require('raml2html');
 var installation = require('../models/installation.js');
@@ -7,15 +8,14 @@ router.get('/', function(req, res, next) {
   var options = {
     params: {},
     format: "json",
-    fields: {"_id": "true",
+    fields: { "_id": "true",
              "Nom": "true",
              "Condition": "false",
              "Arrondissement": "false",
              "Addresse": "false"}
   };
-
   installation.find(null, options, function(err, data){
-    res.render('layout', {title: "Mon app", installationNames: data});
+    res.render('layout', {title: config.appTitle, installationNames: data});
   });
 
 });
@@ -51,8 +51,12 @@ router.get('/installations', function(req, res, next) {
   };
 
   installation.find(null, options, function(err, data){
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(data));
+    if (err){
+      res.status(err.status).send({error: ''});
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(data));
+    }
   });
 });
 

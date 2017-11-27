@@ -1,4 +1,4 @@
-var config = require('../config.js')
+var config = require('../config.js');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var _ = require('underscore');
@@ -14,7 +14,8 @@ getDb = function() {
 exports.connectToServer = function(callback) {
   // https://stackoverflow.com/a/24634454
   //MongoClient.connect( config.db.heroku, function( err, db ) {
-  MongoClient.connect( config.db.local, function( err, db ) {
+    console.log(config.db.local.address);
+  MongoClient.connect( config.db.local.address, function( err, db ) {
     if (err) {
       err.status = 500;
       console.log(err);
