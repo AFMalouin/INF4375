@@ -3,7 +3,6 @@ var raml2html = require('raml2html');
 var installation = require('../models/installation.js');
 var router = express.Router();
 
-var installation = require('../models/installation.js');
 router.get('/', function(req, res, next) {
   var options = {
     params: {},

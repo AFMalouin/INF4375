@@ -1,3 +1,4 @@
+var config = require('../config.js')
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var _ = require('underscore');
@@ -12,8 +13,12 @@ getDb = function() {
 
 exports.connectToServer = function(callback) {
   // https://stackoverflow.com/a/24634454
-  //MongoClient.connect( "mongodb://heroku_wdk79gdg:avd3h0ujeb8bbrjjk4nbectibo@ds231715.mlab.com:31715/heroku_wdk79gdg", function( err, db ) {
-  MongoClient.connect( "mongodb://localhost:27017/tp1", function( err, db ) { // TODO put switch in config
+  //MongoClient.connect( config.db.heroku, function( err, db ) {
+  MongoClient.connect( config.db.local, function( err, db ) {
+    if (err) {
+      err.status = 500;
+      console.log(err);
+    }
     _db = db;
     return callback(err);
   });
@@ -25,15 +30,18 @@ exports.save = function(err, data, callback) {
   if (data.length <= 0){
     callback(err);
   }
-  db.collection("installations", function (err, collection) {
+  db.collection(config.db.maincollection, function (err, collection) {
     if (err) {
-      console.log("Erreur avec la base de données.", err);
+      err.status = 500;
+      console.log(err);
       db.close();
+      callback(err);
     } else {
       trimEntries(err, data, function(err, data){
         collection.insert(data, function (err, result) {
           if (err) {
-            console.log("Erreur lors de l'insertion de " + data, err);
+            err.status = 500;
+            console.log(err);
           } else {
             console.log(data.length + " " + data[0].Type +"(s) ajouté(s)");
           }
@@ -47,23 +55,29 @@ exports.save = function(err, data, callback) {
 exports.find = function(err, query, fields, callback) {
   var db = getDb();
 
-  db.collection("installations", function (err, collection) {
+  db.collection(config.db.maincollection, function (err, collection) {
     if (err) {
-      console.log("Erreur avec la base de données.", err);
       db.close();
+      err.status = 500;
+      console.log(err);
+      callback(err);
     } else {
       if (typeof(query._id) !== 'undefined'){
         var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
         if (checkForHexRegExp.test(query._id)){
           query._id = ObjectID(query._id);
         } else {
-          callback("Format de id invalide");
+          var err = new Error('Format de ID invalide');
+          err.status = 400;
+          console.log(err);
+          callback(err);
         }
       }
       collection.find(query, fields, function (err, result) {
         if (err) {
           db.close();
-          console.log("Erreur lors de la recherche.", err);
+          err.status = 500;
+          console.log(err);
           callback(err);
         } else {
           var results = result.toArray();
@@ -75,6 +89,8 @@ exports.find = function(err, query, fields, callback) {
                 });
               });
           }).catch(function (err) {
+            err.status = 500;
+            console.log(err);
             callback(err);
           });
         }
@@ -85,15 +101,19 @@ exports.find = function(err, query, fields, callback) {
 
 exports.removeAllInstallations = function(err, callback){
   var db = getDb();
-  db.collection("installations", function (err, collection) {
+  db.collection(config.db.maincollection, function (err, collection) {
     collection.remove();
+    if (err){
+      err.status = 500;
+      console.log(err);
+    }
+    callback(err);
   });
-  callback(err);
 }
 
 var stringnifyIds = function(err, data, callback) {
   for (var i = 0; i < data.length; i++) {
-    if (_.has(data[i], '_id')){
+    if (_.has(data[i], config.fields.id)){
       data[i]._id =  data[i]._id.toString();
     }
   }
