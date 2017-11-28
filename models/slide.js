@@ -1,3 +1,4 @@
+var config = require('../config.js');
 var http = require('http');
 var xmlToJson = require('../helpers/format-helpers.js').xmlToJson;
 var db = require('../db/db.js');
@@ -15,7 +16,9 @@ exports.fetchData = function getData(err, callback) {
   var request = http.get(options, function (result) {
     // La réponse http a été reçue.
     if (result.statusCode !== 200) {
-      callback('HTTP Error: ' + result.statusCode);
+      err = new Error('HTTP Error: ' + result.statusCode);
+      console.log(err);
+      callback(err);
     } else {
       var chunks = [];
       result.setEncoding('utf-8');
@@ -33,13 +36,19 @@ exports.fetchData = function getData(err, callback) {
         var attributes = ['glissades', 'glissade'];
         var data = chunks.join('');
         xmlToJson(null, attributes, data, function(err, parsedEntries) {
-          normalize(err, parsedEntries, function(err, normalizedDocuments){
-            if (normalizedDocuments.length > 0){
-              db.save(err, normalizedDocuments, callback);
-            } else {
-              callback(null);
-            }
-          });
+          if (err) {
+            callback(err);
+          } else {
+            normalize(err, parsedEntries, function(err, normalizedDocuments){
+              if (normalizedDocuments.length > 0){
+                db.save(err, normalizedDocuments, function(err){
+                  callback(err);
+                });
+              } else {
+                callback(null);
+              }
+            });
+          }
         });
       });
     }
@@ -59,7 +68,7 @@ var normalize = function(err, data, callback){
   var remainingDocuments = data.length;
   _.each(data, function(element, index, list){
     var normalizedDocument = {
-      Type : 'Glissade',
+      Type : config.types.slide,
       Nom : element.nom,
       Condition : element.condition,
       Arrondissement : element.arrondissement.nom_arr,

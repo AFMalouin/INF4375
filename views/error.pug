@@ -1,4 +1,13 @@
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/bootstrap/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
+    script(src='/bootstrap/js/bootstrap.js')
+    script(src="/javascripts/scripts.js")
+  body
+    block content
+    h1= message
+    h2= error.status
+    pre #{error.stack}

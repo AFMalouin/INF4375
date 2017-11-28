@@ -14,10 +14,14 @@ router.get('/', function(req, res, next) {
              "Arrondissement": "false",
              "Addresse": "false"}
   };
+  
   installation.find(null, options, function(err, data){
-    res.render('layout', {title: config.appTitle, installationNames: data});
+    if (err){
+      res.status(err.status).send({error: err, stack: err.stack});
+    } else {
+      res.render('layout', {title: config.appTitle, installationNames: data});
+    }
   });
-
 });
 
 router.get('/doc', function(req, res, next) {
@@ -28,7 +32,7 @@ router.get('/doc', function(req, res, next) {
   }, function(err){
     // Erreur
     console.log(err);
-    res.sendStatus(500);
+    res.status(500).send({error: err, stack: err.stack});
   });
 });
 
@@ -52,7 +56,7 @@ router.get('/installations', function(req, res, next) {
 
   installation.find(null, options, function(err, data){
     if (err){
-      res.status(err.status).send({error: ''});
+      res.status(err.status).send({error: err, stack: err.stack});
     } else {
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(data));
@@ -68,8 +72,13 @@ router.get('/installations/:id', function(req, res, next) {
   };
 
   installation.find(null, options, function(err, data){
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(data));
+    if(err){
+      res.status(err.status).send({error: err, stack: err.stack});
+    } else {
+      console.log('succ!');
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(data));
+    }
   });
 });
 
@@ -82,7 +91,7 @@ router.get('/mauvaisesconditions.json', function(req, res, next) {
 
   installation.find(null, options, function(err, data){
     if(err){
-      console.log("Erreur: "+ err);
+      res.status(err.status).send({error: err, stack: err.stack});
     } else {
       res.set('Content-Type', 'application/json');
       res.send(data);
@@ -99,7 +108,7 @@ router.get('/mauvaisesconditions.csv', function(req, res, next) {
 
   installation.find(null, options, function(err, data){
     if(err){
-      console.log("Erreur: "+ err);
+      res.status(err.status).send({error: err, stack: err.stack});
     } else {
       res.set('Content-Type', 'text/csv');
       res.send(data);
@@ -116,7 +125,7 @@ router.get('/mauvaisesconditions.xml', function(req, res, next) {
 
   installation.find(null, options, function(err, data){
     if(err){
-      console.log("Erreur: "+ err);
+      res.status(err.status).send({error: err, stack: err.stack});
     } else {
       res.set('Content-Type', 'text/xml');
       res.send(data);

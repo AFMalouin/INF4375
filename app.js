@@ -57,6 +57,7 @@ db.connectToServer(function(err) {
   // Set cron
   var rule = new scheduler.RecurrenceRule();
   rule.hour = config.cron.hour;
+  rule.minute = config.cron.minute;
 
   scheduler.scheduleJob(rule, function(){
     fetchData(null, db);

@@ -8,8 +8,13 @@ exports.xmlToJson = function(err, attributes, data, callback) {
   var parser = new xml2js.Parser({explicitArray : false});
   
   parser.parseString(data, function (err, result) {
-    var jsonEntries = result[attributes[0]][attributes[1]];
-    callback(err, jsonEntries);
+    if (err){
+      console.log(err);
+      callback(err);
+    } else {
+      var jsonEntries = result[attributes[0]][attributes[1]];
+      callback(err, jsonEntries);
+    }
   });
 }
 
@@ -21,8 +26,12 @@ exports.csvToJson = function(err, data, callback) {
     jsonEntries.push(jsonobj);
   })
   .on('done', (err) => {
-    
-    callback(err, jsonEntries);
+    if (err){
+      console.log(err);
+      callback(err);
+    } else {
+      callback(err, jsonEntries);
+    }
   });  
 }
 

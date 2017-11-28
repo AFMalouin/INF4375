@@ -14,7 +14,6 @@ getDb = function() {
 exports.connectToServer = function(callback) {
   // https://stackoverflow.com/a/24634454
   //MongoClient.connect( config.db.heroku, function( err, db ) {
-    console.log(config.db.local.address);
   MongoClient.connect( config.db.local.address, function( err, db ) {
     if (err) {
       err.status = 500;
@@ -63,36 +62,31 @@ exports.find = function(err, query, fields, callback) {
       console.log(err);
       callback(err);
     } else {
-      if (typeof(query._id) !== 'undefined'){
-        var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
-        if (checkForHexRegExp.test(query._id)){
-          query._id = ObjectID(query._id);
-        } else {
-          var err = new Error('Format de ID invalide');
-          err.status = 400;
-          console.log(err);
-          callback(err);
-        }
-      }
-      collection.find(query, fields, function (err, result) {
-        if (err) {
-          db.close();
-          err.status = 500;
-          console.log(err);
+      validateId(err, query, function(err, query){
+        if (err){
           callback(err);
         } else {
-          var results = result.toArray();
-          results
-            .then(function (res) {
-              stringnifyIds(err, res, function(err, data){
-                sortJson(err, res, function(err, data){
-                  callback(err, data);
-                });
+          collection.find(query, fields, function (err, result) {
+            if (err) {
+              db.close();
+              err.status = 500;
+              console.log(err);
+              callback(err);
+            } else {
+              var results = result.toArray();
+              results
+                .then(function (res) {
+                  stringnifyIds(err, res, function(err, data){
+                    sortJson(err, res, function(err, data){
+                      callback(err, data);
+                    });
+                  });
+              }).catch(function (err) {
+                err.status = 500;
+                console.log(err);
+                callback(err);
               });
-          }).catch(function (err) {
-            err.status = 500;
-            console.log(err);
-            callback(err);
+            }
           });
         }
       });
@@ -119,4 +113,21 @@ var stringnifyIds = function(err, data, callback) {
     }
   }
   callback(err, data);
+}
+
+var validateId = function(err, query, callback){
+  if (typeof(query._id) !== 'undefined'){
+    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    if (checkForHexRegExp.test(query._id)){
+      query._id = ObjectID(query._id);
+      callback(err, query);
+    } else {
+      var err = new Error('Format de ID invalide');
+      err.status = 400;
+      console.log(err);
+      callback(err);
+    }
+  } else {
+    callback(err, query)
+  }
 }

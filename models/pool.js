@@ -1,3 +1,4 @@
+var config = require('../config.js');
 var http = require('http');
 var csvToJson = require('../helpers/format-helpers.js').csvToJson;
 var db = require('../db/db.js');
@@ -15,7 +16,9 @@ exports.fetchData = function(err, callback) {
   var request = http.get(options, function (result) {
     // La réponse http a été reçue.
     if (result.statusCode !== 200) {
-      callback('HTTP Error: ' + result.statusCode);
+      err = new Error('HTTP Error: ' + result.statusCode);
+      console.log(err);
+      callback(err);
     } else {
       var chunks = [];
       result.setEncoding('utf-8');
@@ -32,21 +35,28 @@ exports.fetchData = function(err, callback) {
       result.on('end', function () {
         var data = chunks.join('');
         csvToJson(err, data, function(err, parsedEntries) {
-          normalize(err, parsedEntries, function(err, normalizedDocuments){
-            if (normalizedDocuments.length > 0){
-              db.save(err, normalizedDocuments, callback);
-            } else {
-              callback(null);
-            }
-          });
+          if (err){
+            callback(err);
+          } else {
+            normalize(err, parsedEntries, function(err, normalizedDocuments){
+              if (normalizedDocuments.length > 0){
+                db.save(err, normalizedDocuments, function(err){
+                  callback(err);
+                });
+              } else {
+                callback(null);
+              }
+            });
+          }
         });
       });
     }
   });
   
   // En cas d'erreur, on appelle un callback de gestion d'erreur.
-  request.on('error', function (e) {
-    callback(e);
+  request.on('error', function (err) {
+    console.log(err);
+    callback(err);
   });
   
   // On envoie la requête http.
@@ -58,7 +68,7 @@ var normalize = function(err, data, callback){
   var remainingDocuments = data.length;
   _.each(data, function(element, index, list){
     var normalizedDocument = {
-      Type : 'Piscine',
+      Type : config.types.pool,
       Nom : element.NOM,
       Description : element.TYPE,
       Arrondissement : element.ARRONDISSE,
