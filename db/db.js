@@ -24,44 +24,57 @@ exports.connectToServer = function(callback) {
   });
 }
 
+/* Insert installations in the DB
+* Params
+*   err: The error object
+*   data: An array of installations to save
+*   callback: Returns error object
+*/
 exports.save = function(err, data, callback) {
   var db = getDb();
 
   if (data.length <= 0){
+    // No data to be inserted
     callback(err);
   }
-  db.collection(config.db.maincollection, function (err, collection) {
+
+  db.collection(config.db.mainCollection, function (err, collection) {
     if (err) {
       err.status = 500;
       console.log(err);
       db.close();
       callback(err);
     } else {
-      trimEntries(err, data, function(err, data){
-        collection.insert(data, function (err, result) {
-          if (err) {
-            err.status = 500;
-            console.log(err);
-          } else {
-            console.log(data.length + " " + data[0].Type +"(s) ajouté(s)");
-          }
-          callback(err);
-        });
+      collection.insert(data, function (err, result) {
+        if (err) {
+          err.status = 500;
+          console.log(err);
+        } else {
+          console.log(data.length + " " + data[0].Type +"(s) ajouté(s)");
+        }
+        callback(err);
       });
     }
   });
 }
 
+/* Find installations in the DB
+* Params
+*   err: The error object
+*   query: A mongoDb search query
+*   fields: The installation fields to be returned 
+*   callback: Returns error object and an array of installations
+*/
 exports.find = function(err, query, fields, callback) {
   var db = getDb();
 
-  db.collection(config.db.maincollection, function (err, collection) {
+  db.collection(config.db.mainCollection, function (err, collection) {
     if (err) {
       db.close();
       console.log(err);
       callback(err);
     } else {
-      validateId(err, query, function(err, query){
+      createObjectId(err, query, function(err, query){
         if (err){
           callback(err);
         } else {
@@ -74,12 +87,14 @@ exports.find = function(err, query, fields, callback) {
               var results = result.toArray();
               results
                 .then(function (res) {
+                  // Success
                   stringnifyIds(err, res, function(err, data){
                     sortJson(err, res, function(err, data){
                       callback(err, data);
                     });
                   });
-              }).catch(function (err) {
+                }).catch(function (err) {
+                // Error
                 console.log(err);
                 callback(err);
               });
@@ -91,9 +106,14 @@ exports.find = function(err, query, fields, callback) {
   });
 }
 
+/* Purge the DB of any installation
+* Params
+*   err: The error object
+*   callback: Returns error object
+*/
 exports.removeAllInstallations = function(err, callback){
   var db = getDb();
-  db.collection(config.db.maincollection, function (err, collection) {
+  db.collection(config.db.mainCollection, function (err, collection) {
     collection.remove();
     if (err){
       console.log(err);
@@ -102,6 +122,12 @@ exports.removeAllInstallations = function(err, callback){
   });
 }
 
+/* Turns mongoDB ObjectIds into strings
+* Params
+*   err: The error object
+*   data: An array of ObjectIds
+*   callback: Returns error object and array of strignified ids
+*/
 var stringnifyIds = function(err, data, callback) {
   for (var i = 0; i < data.length; i++) {
     if (_.has(data[i], config.fields.id)){
@@ -111,19 +137,32 @@ var stringnifyIds = function(err, data, callback) {
   callback(err, data);
 }
 
-var validateId = function(err, query, callback){
+/* Validate that an id can be turned into a MongoDB ObjectId and
+   returns the mongoDB query with it's id turned into an ObjectId
+* Params
+*   err: The error object
+*   query: A mongoDB query
+*   callback: Returns the error object and the mongoDB query 
+*             with the id turned into an ObjectId
+*/
+var createObjectId = function(err, query, callback){
   if (typeof(query._id) !== 'undefined'){
+    // Query contains an id to validate
     var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+
     if (checkForHexRegExp.test(query._id)){
+      // Id is in a valid format
       query._id = ObjectID(query._id);
       callback(err, query);
     } else {
+      // Id is in an invalid format
       var err = new Error('Format de ID invalide');
       err.status = 400;
       console.log(err);
       callback(err);
     }
   } else {
+    // Query does not contain an id, nothing to do here
     callback(err, query)
   }
 }

@@ -50,7 +50,7 @@ db.connectToServer(function(err) {
   });
 
   // initial fetching of the data on app start
-  fetchData(null, db);
+  fetchData(null);
 
   // set cron everyday at midnight
   var rule = new scheduler.RecurrenceRule();
@@ -58,7 +58,7 @@ db.connectToServer(function(err) {
   rule.minute = config.cron.minute;
 
   scheduler.scheduleJob(rule, function(){
-    fetchData(null, db);
+    fetchData(null);
   });
 });
 

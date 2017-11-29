@@ -6,7 +6,7 @@ var router = express.Router();
 
 router.get('/', function(req, res, next) {
 
-  // options for the db query to populate dropdown
+  // Options for the db query to populate dropdown
   var options = {
     params: {},
     format: "json",
@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
              "Addresse": "false"}
   };
   
-  // find all instalaltion names and their id
+  // Find all instalaltion names and their id
   installation.find(null, options, function(err, data){
     if (err){
       res.status(500);
@@ -31,10 +31,10 @@ router.get('/', function(req, res, next) {
 router.get('/doc', function(req, res, next) {
   const config = raml2html.getConfigForTheme();
   raml2html.render("controllers/doc/index.raml", config).then(function(html) {
-    // success
+    // Success
     res.send(html);
   }, function(err){
-    // error
+    // Error
     console.log(err);
     res.status(500);
     res.render('error', {error: err});
@@ -78,7 +78,7 @@ router.get('/installations/:id', function(req, res, next) {
       res.render('error', {error: err});
     } else {
       if (data.length === 0){
-        // no installation found
+        // No installation found
         err = new Error('Aucun document trouvé avec l\'id: ' +  req.params.id);
         err.status = 404;
         res.status(err.status);
