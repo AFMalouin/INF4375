@@ -34,6 +34,10 @@ version: 1
             body:
               application/json:
                 type: !include ../schemas/single-installation-output.json
+          400:
+            description: Format de ID invalide
+          404:
+            description: "Aucun document trouvé avec l'id: {id}"
           500:
             description: Une erreur interne s'est produite.
   /mauvaisesconditions.json:

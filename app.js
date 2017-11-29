@@ -1,4 +1,3 @@
-var config = require('./config.js')
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -7,15 +6,13 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var scheduler = require('node-schedule');
 
+// Local dependencies
+var config = require('./config.js')
 var db = require('./db/db.js');
+var fetchData = require('./helpers/fetch-data.js').fetchData;
 
-// Controllers
+// Controller
 var index = require('./controllers/index.js');
-
-// Models
-var pool = require('./models/pool.js')
-var rink = require('./models/rink.js')
-var slide = require('./models/slide.js')
 
 var app = express();
 
@@ -52,9 +49,10 @@ db.connectToServer(function(err) {
     res.render('error');
   });
 
+  // initial fetching of the data on app start
   fetchData(null, db);
 
-  // Set cron
+  // set cron everyday at midnight
   var rule = new scheduler.RecurrenceRule();
   rule.hour = config.cron.hour;
   rule.minute = config.cron.minute;
@@ -63,25 +61,5 @@ db.connectToServer(function(err) {
     fetchData(null, db);
   });
 });
-
-var fetchData = function(err, db){
-  db.removeAllInstallations(err, function(err){
-    pool.fetchData(err, function(err){
-      if (err) {
-        console.log('Erreur dans le fetch de pool: ' + err);
-      }
-    });
-    rink.fetchData(err, function(err){
-      if (err) {
-        console.log('Erreur dans le fetch de rink: ' + err);
-      }
-    });
-    slide.fetchData(err, function(err){
-      if (err) {
-        console.log('Erreur dans le fetch de slide: ' + err);
-      }
-    });
-  });
-}
 
 module.exports = app;

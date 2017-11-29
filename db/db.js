@@ -58,7 +58,6 @@ exports.find = function(err, query, fields, callback) {
   db.collection(config.db.maincollection, function (err, collection) {
     if (err) {
       db.close();
-      err.status = 500;
       console.log(err);
       callback(err);
     } else {
@@ -69,7 +68,6 @@ exports.find = function(err, query, fields, callback) {
           collection.find(query, fields, function (err, result) {
             if (err) {
               db.close();
-              err.status = 500;
               console.log(err);
               callback(err);
             } else {
@@ -82,7 +80,6 @@ exports.find = function(err, query, fields, callback) {
                     });
                   });
               }).catch(function (err) {
-                err.status = 500;
                 console.log(err);
                 callback(err);
               });
@@ -99,7 +96,6 @@ exports.removeAllInstallations = function(err, callback){
   db.collection(config.db.maincollection, function (err, collection) {
     collection.remove();
     if (err){
-      err.status = 500;
       console.log(err);
     }
     callback(err);
