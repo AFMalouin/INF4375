@@ -57,7 +57,7 @@ db.connectToServer(function(err) {
   rule.hour = config.cron.hour;
   rule.minute = config.cron.minute;
 
-  scheduler.scheduleJob(rule, function(){
+  scheduler.scheduleJob(rule, function() {
     fetchData(null);
   });
 });

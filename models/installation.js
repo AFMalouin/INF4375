@@ -11,25 +11,34 @@ var jsonToCsv = require('../helpers/format-helpers.js').jsonToCsv;
 *   callback: Returns error object and/or data 
 */
 exports.find = function(err, options, callback) {
-  db.find(err, options.params, options.fields, function(err, data){
-    if(err){
+  db.find(err, options.params, options.fields, function(err, data) {
+    if (err) {
       callback(err);
     } else {
-      if (options.format === "xml") {
-        jsonToXml(err, data, function(err, result){
-          callback(err, result);
+      if (options.format === 'xml') {
+        jsonToXml(err, data, function(err, result) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(err, result);
+          }
         });
-      } else if (options.format === "csv") {
-        jsonToCsv(err, data, function(err, result){
-          callback(err, result);
+      } else if (options.format === 'csv') {
+        jsonToCsv(err, data, function(err, result) {
+          if (err) {
+            callback(err);
+          } else {
+            callback(err, result);
+          }
         });
-      } else if (options.format === "json") {
-        callback(err, data);
+      } else if (options.format === 'json') {
+        if (err) {
+          callback(err);
+        } else {
+          callback(err, data);
+        }
       } else {
-        // We return a status 500 since a bad format in the 
-        // URL wouldn't be routed and result in a 404
         err = new Error('Format de fichier non reconnu: ' + options.format);
-        err.status = 500;
         console.log(err);
         callback(err);
       }

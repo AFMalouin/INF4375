@@ -3,7 +3,6 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var _ = require('underscore');
 var sortJson = require('../helpers/sortJson.js').sortJson;
-var trimEntries = require('../helpers/sanitize-entries.js').trim;
 
 var _db;
 
@@ -33,7 +32,7 @@ exports.connectToServer = function(callback) {
 exports.save = function(err, data, callback) {
   var db = getDb();
 
-  if (data.length <= 0){
+  if (data.length <= 0) {
     // No data to be inserted
     callback(err);
   }
@@ -50,7 +49,7 @@ exports.save = function(err, data, callback) {
           err.status = 500;
           console.log(err);
         } else {
-          console.log(data.length + " " + data[0].Type +"(s) ajouté(s)");
+          console.log(data.length + ' ' + data[0].Type +'(s) ajouté(s)');
         }
         callback(err);
       });
@@ -74,8 +73,8 @@ exports.find = function(err, query, fields, callback) {
       console.log(err);
       callback(err);
     } else {
-      createObjectId(err, query, function(err, query){
-        if (err){
+      createObjectId(err, query, function(err, query) {
+        if (err) {
           callback(err);
         } else {
           collection.find(query, fields, function (err, result) {
@@ -88,10 +87,18 @@ exports.find = function(err, query, fields, callback) {
               results
                 .then(function (res) {
                   // Success
-                  stringnifyIds(err, res, function(err, data){
-                    sortJson(err, res, function(err, data){
-                      callback(err, data);
-                    });
+                  stringnifyIds(err, res, function(err, data) {
+                    if (err) {
+                      callback(err);
+                    } else {
+                      sortJson(err, res, config.fields.name, function(err, data) {
+                        if (err){
+                          callback(err);
+                        } else {
+                          callback(err, data);
+                        }
+                      });
+                    }
                   });
                 }).catch(function (err) {
                 // Error
@@ -111,11 +118,11 @@ exports.find = function(err, query, fields, callback) {
 *   err: The error object
 *   callback: Returns error object
 */
-exports.removeAllInstallations = function(err, callback){
+exports.removeAllInstallations = function(err, callback) {
   var db = getDb();
   db.collection(config.db.mainCollection, function (err, collection) {
     collection.remove();
-    if (err){
+    if (err) {
       console.log(err);
     }
     callback(err);
@@ -129,12 +136,17 @@ exports.removeAllInstallations = function(err, callback){
 *   callback: Returns error object and array of strignified ids
 */
 var stringnifyIds = function(err, data, callback) {
-  for (var i = 0; i < data.length; i++) {
-    if (_.has(data[i], config.fields.id)){
-      data[i]._id =  data[i]._id.toString();
+  try{
+    for (var i = 0; i < data.length; i++) {
+      if (_.has(data[i], config.fields.id)) {
+        data[i]._id =  data[i]._id.toString();
+      }
     }
+    callback(err, data);
+  } catch(err) {
+    console.log(err);
+    callback(err);
   }
-  callback(err, data);
 }
 
 /* Validate that an id can be turned into a MongoDB ObjectId and
@@ -145,12 +157,12 @@ var stringnifyIds = function(err, data, callback) {
 *   callback: Returns the error object and the mongoDB query 
 *             with the id turned into an ObjectId
 */
-var createObjectId = function(err, query, callback){
-  if (typeof(query._id) !== 'undefined'){
+var createObjectId = function(err, query, callback) {
+  if (typeof(query._id) !== 'undefined') {
     // Query contains an id to validate
-    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    var checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');
 
-    if (checkForHexRegExp.test(query._id)){
+    if (checkForHexRegExp.test(query._id)) {
       // Id is in a valid format
       query._id = ObjectID(query._id);
       callback(err, query);

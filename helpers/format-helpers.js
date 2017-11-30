@@ -1,6 +1,6 @@
 var xml2js = require('xml2js');
 var csv = require('csvtojson');
-var js2xmlparser = require("js2xmlparser");
+var js2xmlparser = require('js2xmlparser');
 var json2csv = require('json2csv');
 var _ = require('underscore');
 
@@ -16,7 +16,7 @@ exports.xmlToJson = function(err, attributes, data, callback) {
   var parser = new xml2js.Parser({explicitArray : false});
   
   parser.parseString(data, function (err, result) {
-    if (err){
+    if (err) {
       console.log(err);
       callback(err);
     } else {
@@ -41,7 +41,7 @@ exports.csvToJson = function(err, data, callback) {
     jsonEntries.push(jsonobj);
   })
   .on('done', (err) => {
-    if (err){
+    if (err) {
       console.log(err);
       callback(err);
     } else {
@@ -60,14 +60,14 @@ exports.jsonToXml = function(err, data, callback) {
     var options = {
       declaration: {
           include: true,
-          encoding: "UTF-8"
+          encoding: 'UTF-8'
       }
     };
     try{
-      var xmlEntries = js2xmlparser.parse("installation", data, options);
+      var xmlEntries = js2xmlparser.parse('installation', data, options);
       callback(err, xmlEntries);
-    }
-    catch(err){
+    } catch(err) {
+      console.log(err);
       callback(err);
     }
   }
@@ -83,8 +83,8 @@ exports.jsonToCsv = function(err, data, callback) {
     fields = _.keys(data[0]);
     var csvEntries = json2csv({data: data, fields: fields});
     callback(err, csvEntries);
-  }
-  catch(err){
+  } catch(err) {
+    console.log(err);
     callback(err);
   }
 }

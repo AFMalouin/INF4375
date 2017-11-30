@@ -9,21 +9,21 @@ var slide = require('../models/slide.js')
 * Params
 *   err: The error object
 */
-exports.fetchData = function(err){
-  db.removeAllInstallations(err, function(err){
-    pool.fetchData(err, function(err){
+exports.fetchData = function(err) {
+  db.removeAllInstallations(err, function(err) {
+    pool.fetchData(err, function(err) {
       if (err) {
-        console.log('Erreur dans le fetch de pool: ' + err);
+        console.log('Erreur dans le fetch de pool');
       }
     });
-    rink.fetchData(err, function(err){
+    rink.fetchData(err, function(err) {
       if (err) {
-        console.log('Erreur dans le fetch de rink: ' + err);
+        console.log('Erreur dans le fetch de rink');
       }
     });
-    slide.fetchData(err, function(err){
+    slide.fetchData(err, function(err) {
       if (err) {
-        console.log('Erreur dans le fetch de slide: ' + err);
+        console.log('Erreur dans le fetch de slide');
       }
     });
   });

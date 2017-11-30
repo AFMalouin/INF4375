@@ -18,8 +18,8 @@ router.get('/', function(req, res, next) {
   };
   
   // Find all instalaltion names and their id
-  installation.find(null, options, function(err, data){
-    if (err){
+  installation.find(null, options, function(err, data) {
+    if (err) {
       res.status(500);
       res.render('error', {error: err});
     } else {
@@ -33,7 +33,7 @@ router.get('/doc', function(req, res, next) {
   raml2html.render("controllers/doc/index.raml", config).then(function(html) {
     // Success
     res.send(html);
-  }, function(err){
+  }, function(err) {
     // Error
     console.log(err);
     res.status(500);
@@ -44,7 +44,7 @@ router.get('/doc', function(req, res, next) {
 router.get('/installations', function(req, res, next) {
   var params = {};
 
-  if (req.query.arrondissement){
+  if (req.query.arrondissement) {
     params.Arrondissement = req.query.arrondissement;
   }
 
@@ -54,8 +54,8 @@ router.get('/installations', function(req, res, next) {
     fields: []
   };
 
-  installation.find(null, options, function(err, data){
-    if (err){
+  installation.find(null, options, function(err, data) {
+    if (err) {
       res.status(err.status || 500);
       res.render('error', {error: err});
     } else {
@@ -72,12 +72,12 @@ router.get('/installations/:id', function(req, res, next) {
     fields: []
   };
 
-  installation.find(null, options, function(err, data){
-    if(err){
+  installation.find(null, options, function(err, data) {
+    if(err) {
       res.status(err.status || 500);
       res.render('error', {error: err});
     } else {
-      if (data.length === 0){
+      if (data.length === 0) {
         // No installation found
         err = new Error('Aucun document trouvé avec l\'id: ' +  req.params.id);
         err.status = 404;
@@ -98,8 +98,8 @@ router.get('/mauvaisesconditions.json', function(req, res, next) {
     fields: {}
   };
 
-  installation.find(null, options, function(err, data){
-    if(err){
+  installation.find(null, options, function(err, data) {
+    if(err) {
       res.status(err.status || 500);
       res.render('error', {error: err});
     } else {
@@ -116,8 +116,8 @@ router.get('/mauvaisesconditions.csv', function(req, res, next) {
     fields: {}
   };
 
-  installation.find(null, options, function(err, data){
-    if(err){
+  installation.find(null, options, function(err, data) {
+    if(err) {
       res.status(err.status || 500);
       res.render('error', {error: err});
     } else {
@@ -134,8 +134,8 @@ router.get('/mauvaisesconditions.xml', function(req, res, next) {
     fields: {}
   };
 
-  installation.find(null, options, function(err, data){
-    if(err){
+  installation.find(null, options, function(err, data) {
+    if(err) {
       res.status(err.status || 500);
       res.render('error', {error: err});
     } else {

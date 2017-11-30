@@ -32,6 +32,7 @@ config.fields = {
   object :'Installation',
   type :'Type',
   name :'Nom',
+  description :'Description',
   condition :'Condition',
   borough :'Arrondissement',
   address :'Addresse'

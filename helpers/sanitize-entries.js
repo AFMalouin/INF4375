@@ -7,8 +7,8 @@ exports.trim = function(err, data, callback) {
       data[i].Addresse = data[i].Addresse.trim();
     }
     callback(err, data);
-  }
-  catch(err){
+  } catch(err) {
+    console.log(err);
     callback(err);
   }
 }

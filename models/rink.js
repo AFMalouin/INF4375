@@ -47,16 +47,21 @@ exports.fetchData = function(err, callback) {
 
         var data = chunks.join('');
         xmlToJson(null, attributes, data, function(err, parsedEntries) {
-          if (err){
+          if (err) {
             callback(err);
           } else {
-            normalize(err, parsedEntries, function(err, normalizedDocuments){
-              if (normalizedDocuments.length > 0){
-                db.save(err, normalizedDocuments, function (err){
-                  callback(err);
-                });
-              } else {
-                callback(null);
+            normalize(err, parsedEntries, function(err, normalizedDocuments) {
+              if (err) {
+                callback(err);
+              }
+              else {
+                if (normalizedDocuments.length > 0) {
+                  db.save(err, normalizedDocuments, function (err) {
+                    callback(err);
+                  });
+                } else {
+                  callback(null);
+                }
               }
             });
           }
@@ -79,15 +84,16 @@ exports.fetchData = function(err, callback) {
 *   data: Array of raw json documents to normalize
 *   callback: Returns error object and array of normalized documents
 */
-var normalize = function(err, data, callback){
+var normalize = function(err, data, callback) {
   try{
     var normalizedDocuments = [];
     var remainingDocuments = data.length;
   
-    _.each(data, function(element, index, list){
+    _.each(data, function(element, index, list) {
       var normalizedDocument = {
         Type : config.types.rink,
         Nom : element.nom,
+        Description: 'N/A',
         Condition : element.condition,
         Arrondissement : element.arrondissement.nom_arr,
         Addresse: 'N/A'
@@ -96,14 +102,14 @@ var normalize = function(err, data, callback){
       normalizedDocuments.push(normalizedDocument);
       remainingDocuments -= 1;
   
-      if (remainingDocuments == 0){
-        trimEntries(err, normalizedDocuments, function(err, data){
+      if (remainingDocuments == 0) {
+        trimEntries(err, normalizedDocuments, function(err, data) {
           callback(err, data);
         });
       }
     });
-  }
-  catch(err){
+  } catch(err) {
+    console.log(err);
     callback(err);
   }
 }
