@@ -9,7 +9,7 @@ var slide = require('../models/slide.js')
 * Params
 *   err: The error object
 */
-exports.fetchData = function(err) {
+exports.fetchAllData = function(err) {
   db.removeAllInstallations(err, function(err) {
     pool.fetchData(err, function(err) {
       if (err) {

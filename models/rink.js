@@ -85,7 +85,7 @@ exports.fetchData = function(err, callback) {
 *   callback: Returns error object and array of normalized documents
 */
 var normalize = function(err, data, callback) {
-  try{
+  try {
     var normalizedDocuments = [];
     var remainingDocuments = data.length;
   

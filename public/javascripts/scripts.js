@@ -1,19 +1,26 @@
+// Gets the bourough text input value and sends it to search()
 function searchByText() {
   var borough = document.getElementById('borough-field').value;
-  var url = '/installations?arrondissement=' + borough;
-  search(url);
+  var route = '/installations?arrondissement=' + borough;
+  search(route);
 }
 
+// Gets the installation name dropdown value and sends it to search()
 function searchByDropdown() {
   var e = document.getElementById('search-dropdown');
   var id = e.options[e.selectedIndex].value;
-  var url = '/installations/' + id;
-  search(url);
+  var route = '/installations/' + id;
+  search(route);
 }
 
-function search(url) {
+/* Makes the ajax call to get the search results and 
+*  creates the results table
+* Params
+*   route: The route on which to send the ajax call
+*/
+function search(route) {
   var xhr = new XMLHttpRequest();
-  xhr.open('GET', url);
+  xhr.open('GET', route);
   xhr.onreadystatechange = function() {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
@@ -41,6 +48,7 @@ function search(url) {
   return false;
 }
 
+// Prevents default HTML forms behavior
 $(document).ready(function() {
   $('form').submit(function(e) {
       e.preventDefault(e);

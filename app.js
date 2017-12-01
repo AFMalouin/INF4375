@@ -9,7 +9,7 @@ var scheduler = require('node-schedule');
 // Local dependencies
 var config = require('./config.js')
 var db = require('./db/db.js');
-var fetchData = require('./helpers/fetch-data.js').fetchData;
+var fetchAllData = require('./helpers/fetch-all-data.js').fetchAllData;
 
 // Controller
 var index = require('./controllers/index.js');
@@ -50,7 +50,7 @@ db.connectToServer(function(err) {
   });
 
   // initial fetching of the data on app start
-  fetchData(null);
+  fetchAllData(null);
 
   // set cron everyday at midnight
   var rule = new scheduler.RecurrenceRule();
@@ -58,7 +58,7 @@ db.connectToServer(function(err) {
   rule.minute = config.cron.minute;
 
   scheduler.scheduleJob(rule, function() {
-    fetchData(null);
+    fetchAllData(null);
   });
 });
 
