@@ -1,7 +1,9 @@
 var config = require('../config.js');
 var express = require('express');
 var raml2html = require('raml2html');
+var jsonschema = require('jsonschema');
 var installation = require('../models/installation.js');
+var changeInstallationSchema = require('./schemas/change-single-installation.json');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -11,16 +13,20 @@ router.get('/', function(req, res, next) {
     params: {},
     format: "json",
     fields: { "_id": "true",
-             "Nom": "true",
-             "Condition": "false",
-             "Arrondissement": "false",
-             "Addresse": "false"}
+             "nom": "true",
+             "description": "false",
+             "condition": "false",
+             "arrondissement": "false",
+             "addresse": "false"}
   };
   
-  // Find all instalaltion names and their id
+  // Find all installation names and their id
   installation.find(null, options, function(err, data) {
     if (err) {
-      res.status(500);
+      if (!err.status) {
+        err.status = 500;
+      }
+      res.status(err.status);
       res.render('error', {error: err});
     } else {
       res.render('layout', {title: config.appTitle, installationNames: data});
@@ -36,7 +42,10 @@ router.get('/doc', function(req, res, next) {
   }, function(err) {
     // Error
     console.log(err);
-    res.status(500);
+    if (!err.status) {
+      err.status = 500;
+    }
+    res.status(err.status);
     res.render('error', {error: err});
   });
 });
@@ -56,7 +65,10 @@ router.get('/installations', function(req, res, next) {
 
   installation.find(null, options, function(err, data) {
     if (err) {
-      res.status(err.status || 500);
+      if (!err.status) {
+        err.status = 500;
+      }
+      res.status(err.status);
       res.render('error', {error: err});
     } else {
       res.setHeader('Content-Type', 'application/json');
@@ -74,7 +86,10 @@ router.get('/installations/:id', function(req, res, next) {
 
   installation.find(null, options, function(err, data) {
     if(err) {
-      res.status(err.status || 500);
+      if (!err.status) {
+        err.status = 500;
+      }
+      res.status(err.status);
       res.render('error', {error: err});
     } else {
       if (data.length === 0) {
@@ -85,22 +100,72 @@ router.get('/installations/:id', function(req, res, next) {
         res.render('error', {error: err});
       } else {
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(data));
+        // Remove single installation from array 
+        res.send(JSON.stringify(data[0]));
       }
+    }
+  });
+});
+
+router.put('/installations/:id', function(req, res, next) {
+  var id =  req.params.id;
+  var data = req.body;
+
+  var result = jsonschema.validate(data, changeInstallationSchema);
+
+  if (result.errors.length !== 0) {
+    err = new Error('Requête mal formée.');
+    err.status = 400;
+    res.status(err.status);
+    res.render('error', {error: err});
+  } else {
+    installation.updateSlide(null, id, data, function(err, object){
+      if (err){
+        if (!err.status) {
+          err.status = 500;
+        }
+        res.status(err.status);
+        res.render('error', {error: err});
+      } else {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200);
+        res.send(JSON.stringify(object.value));
+      }
+    });
+  }
+});
+
+router.delete('/installations/:id', function(req, res, next) {
+  var id =  req.params.id;
+
+  installation.deleteSlide(null, id, function(err, object){
+    if (err){
+      if (!err.status) {
+        err.status = 500;
+      }
+      res.status(err.status);
+      res.render('error', {error: err});
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.status(204);
+      res.send();
     }
   });
 });
 
 router.get('/mauvaisesconditions.json', function(req, res, next) {
   var options = {
-    params: {Condition : "Mauvaise"},
+    params: {condition : "Mauvaise"},
     format: "json",
     fields: {}
   };
 
   installation.find(null, options, function(err, data) {
     if(err) {
-      res.status(err.status || 500);
+      if (!err.status) {
+        err.status = 500;
+      }
+      res.status(err.status);
       res.render('error', {error: err});
     } else {
       res.set('Content-Type', 'application/json');
@@ -111,14 +176,17 @@ router.get('/mauvaisesconditions.json', function(req, res, next) {
 
 router.get('/mauvaisesconditions.csv', function(req, res, next) {
   var options = {
-    params: {Condition : "Mauvaise"},
+    params: {condition : "Mauvaise"},
     format: "csv",
     fields: {}
   };
 
   installation.find(null, options, function(err, data) {
     if(err) {
-      res.status(err.status || 500);
+      if (!err.status) {
+        err.status = 500;
+      }
+      res.status(err.status);
       res.render('error', {error: err});
     } else {
       res.set('Content-Type', 'text/csv');
@@ -129,14 +197,17 @@ router.get('/mauvaisesconditions.csv', function(req, res, next) {
 
 router.get('/mauvaisesconditions.xml', function(req, res, next) {
   var options = {
-    params: {Condition : "Mauvaise"},
+    params: {condition : "Mauvaise"},
     format: "xml",
     fields: {}
   };
 
   installation.find(null, options, function(err, data) {
     if(err) {
-      res.status(err.status || 500);
+      if (!err.status) {
+        err.status = 500;
+      }
+      res.status(err.status);
       res.render('error', {error: err});
     } else {
       res.set('Content-Type', 'text/xml');

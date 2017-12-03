@@ -1,0 +1,26 @@
+{
+  "type": "object",
+  "required": true,
+  "properties": {
+    "nom": {
+      "type": "string",
+      "required": false
+    },
+    "description": {
+      "type": "string",
+      "required": false
+    },
+    "condition": {
+      "type": "string",
+      "required": false
+    },    
+    "arrondissement": {
+        "type": "string",
+        "required": false
+    },    
+    "addresse": {
+        "type": "string",
+        "required": false
+    }
+  }
+}

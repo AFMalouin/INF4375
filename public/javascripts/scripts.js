@@ -28,12 +28,12 @@ function search(route) {
         var trHTML = '<thead><tr><th>Type d\'installation</th><th>Nom</th><th>Description</th><th>Arrondissement</th><th>Addresse</th><th>Condition</th></tr></thead><tbody>';
         $.each(installations, function (i, installation) {
           trHTML += '<tr><td>' 
-            + installation.Type + '</td><td>' 
-            + installation.Nom + '</td><td>' 
-            + installation.Description + '</td><td>' 
-            + installation.Arrondissement + '</td><td>' 
-            + installation.Addresse + '</td><td>' 
-            + installation.Condition + '</td></tr>';
+            + installation.type + '</td><td>' 
+            + installation.nom + '</td><td>' 
+            + installation.description + '</td><td>' 
+            + installation.arrondissement + '</td><td>' 
+            + installation.addresse + '</td><td>' 
+            + installation.condition + '</td></tr>';
         });
         trHTML += '</tbody>'
         $('#search-results').html(trHTML)

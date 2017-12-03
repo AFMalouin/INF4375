@@ -49,7 +49,7 @@ exports.save = function(err, data, callback) {
           err.status = 500;
           console.log(err);
         } else {
-          console.log(data.length + ' ' + data[0].Type +'(s) ajouté(s)');
+          console.log(data.length + ' ' + data[0].type +'(s) ajouté(s)');
         }
         callback(err);
       });
@@ -105,6 +105,96 @@ exports.find = function(err, query, fields, callback) {
                 console.log(err);
                 callback(err);
               });
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
+/* Delete a single installation in the DB
+* Params
+*   err: The error object
+*   id: The string id of the slide to delete
+*   type: The type of the installation to delete
+*   callback: Returns the error object
+*/
+exports.deleteInstallation = function(err, id, type, callback) {
+  var db = getDb();
+
+  db.collection(config.db.mainCollection, function (err, collection) {
+    if (err) {
+      db.close();
+      console.log(err);
+      callback(err);
+    } else {
+      var query = {_id: id, type: type};
+  
+      createObjectId(err, query, function(err, query){
+        if (err){
+          callback(err);
+        } else {
+          collection.deleteOne(query, function (err, object){
+            if (err) {
+              console.log(err);
+              callback(err);
+            } else {
+              if (object.deletedCount === 0) {
+                var err = new Error('Aucune glissade trouvée avec l\'id: ' + id);
+                err.status = 404;
+                console.log(err);
+                callback(err);
+              } else {
+                callback(err, object);
+              }
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
+/* Update the state of a single slide in the db
+* Params
+*   err: The error object
+*   id: The string id of the slide to update
+*   type: The type of the installation to update
+*   modifications: The field(s) to modify and the 
+*                  new value(s)
+*   callback: Returns error object and the updated object
+*/
+exports.updateInstallation = function(err, id, type, modifications, callback) {
+  var db = getDb();
+  db.collection(config.db.mainCollection, function (err, collection) {
+    if (err) {
+      db.close();
+      console.log(err);
+      callback(err);
+    } else {
+      var query = {_id: id, type: type};
+      var replacement = {$set: modifications};
+      var options = {returnOriginal: false}; // Return the modified record
+  
+      createObjectId(err, query, function(err, query){
+        if (err){
+          callback(err);
+        } else {
+          console.log('query = '+ JSON.stringify(query));
+          collection.findOneAndUpdate(query, replacement, options, function (err, object){
+            if (err) {
+              console.log(err);
+              callback(err);
+            } else {
+              if (object.value === null) {
+                var err = new Error('Aucune glissade trouvée avec l\'id: ' + id);
+                err.status = 404;
+                console.log(err);
+                callback(err);
+              } else {
+                callback(err, object);
+              }
             }
           });
         }

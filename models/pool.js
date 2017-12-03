@@ -21,6 +21,13 @@ var trimEntries = require('../helpers/sanitize-entries.js').trim;
 var db = require('../db/db.js');
 var _ = require('underscore');
 
+/* Fetch all pools via HTTP request according to
+*  options set in config
+* Params
+*   err: The error object
+*   callback: Returns error object and a JSON
+*             array of pools
+*/
 exports.fetchData = function(err, callback) {
   var options = config.getPoolsOptions;
 
@@ -84,12 +91,12 @@ var normalize = function(err, data, callback) {
   
     _.each(data, function(element, index, list) {
       var normalizedDocument = {
-        Type : config.types.pool,
-        Nom : element.NOM,
-        Description : element.TYPE,
-        Arrondissement : element.ARRONDISSE,
-        Addresse : element.ADRESSE,
-        Condition : 'N/A'
+        type : config.types.pool,
+        nom : element.NOM,
+        description : element.TYPE,
+        arrondissement : element.ARRONDISSE,
+        addresse : element.ADRESSE,
+        condition : 'N/A'
       };
   
       normalizedDocuments.push(normalizedDocument);

@@ -26,7 +26,7 @@ html
             div.form-group.col-md-4
               select#search-dropdown.form-control
                 each name in installationNames
-                  option(value=name._id) #{name.Nom}
+                  option(value=name._id) #{name.nom}
           button(onclick="searchByDropdown()" type='button').btn.btn-default Chercher
     
       div

@@ -21,6 +21,13 @@ var trimEntries = require('../helpers/sanitize-entries.js').trim;
 var db = require('../db/db.js');
 var _ = require('underscore');
 
+/* Fetch all rinks via HTTP request according to
+*  options set in config
+* Params
+*   err: The error object
+*   callback: Returns error object and a JSON
+*             array of rinks
+*/
 exports.fetchData = function(err, callback) {
   var options = config.getRinksOptions;
   
@@ -91,12 +98,12 @@ var normalize = function(err, data, callback) {
   
     _.each(data, function(element, index, list) {
       var normalizedDocument = {
-        Type : config.types.rink,
-        Nom : element.nom,
-        Description: 'N/A',
-        Condition : element.condition,
-        Arrondissement : element.arrondissement.nom_arr,
-        Addresse: 'N/A'
+        type : config.types.rink,
+        nom : element.nom,
+        description: 'N/A',
+        condition : element.condition,
+        arrondissement : element.arrondissement.nom_arr,
+        addresse: 'N/A'
       };
   
       normalizedDocuments.push(normalizedDocument);

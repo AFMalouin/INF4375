@@ -29,13 +29,13 @@ config.favicon = 'favicon.ico';
 // Fields of normalized installations
 config.fields = {
   id :'_id',
-  object :'Installation',
-  type :'Type',
-  name :'Nom',
-  description :'Description',
-  condition :'Condition',
-  borough :'Arrondissement',
-  address :'Addresse'
+  object :'installation',
+  type :'type',
+  name :'nom',
+  description :'description',
+  condition :'condition',
+  borough :'arrondissement',
+  address :'addresse'
 };
 
 // Different types of supported installations
