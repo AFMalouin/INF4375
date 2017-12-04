@@ -17,6 +17,7 @@
     "js2xmlparser": "^3.0.0",
     "json2csv": "^3.11.4",
     "jsonschema": "^1.2.0",
+    "lodash": "^4.17.4",
     "mongodb": "^2.2.31",
     "morgan": "~1.9.0",
     "node-schedule": "^1.2.5",
@@ -24,7 +25,6 @@
     "raml2html": "^6.4.1",
     "serve-favicon": "~2.4.5",
     "sort-json-array": "^0.1.7",
-    "underscore": "^1.8.3",
     "xml2js": "^0.4.19"
   }
 }

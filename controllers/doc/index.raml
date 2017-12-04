@@ -36,6 +36,34 @@ version: 1
             description: "Aucun document trouvé avec l'id: {id}"
           500:
             description: Une erreur interne s'est produite.
+      put:
+        description: Modifier une glissade selon son identifiant.
+        body:
+          application/json:
+            type: !include ../schemas/change-single-installation.json
+        responses: 
+          200:
+            description: Les données de la glissade ont étés correctement modifiées.
+            body:
+              application/json:
+                type: !include ../schemas/single-installation-output.json
+          400:
+            description: Format de ID invalide
+          404:
+            description: "Aucune glissade trouvée avec l'id: {id}"
+          500:
+            description: Une erreur interne s'est produite.
+      delete:
+        description: Supprimer une glissade selon son identifiant.
+        responses: 
+          204:
+            description: Les données de la glissade ont étés correctement supprimées
+          400:
+            description: Format de ID invalide
+          404:
+            description: "Aucune glissade trouvée avec l'id: {id}"
+          500:
+            description: Une erreur interne s'est produite.
   /mauvaisesconditions.json:
     get:
       description: Fournir la liste des installations en mauvaise condition en JSON.

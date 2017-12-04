@@ -27,9 +27,13 @@ La documentation est disponible à l'adresse `http://localhost:3000/doc`.
 #### Où le trouver?
 La route `/installations` et ses paramètres sont configurés dans le fichier `~/controllers/index.js`. 
 
-Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find()` du fichier `~/db/db.js`.
+Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find` du fichier `~/db/db.js`.
 #### Comment le tester?
-L'adresse `http://localhost:3000/installations` retourne toutes les installations disponibles alors que l'adresse `http://localhost:3000/installations?arrondissement={arrondissement}` retourne toutes les installations pour l'arrondissement envoyé en paramètre.
+L'adresse `http://localhost:3000/installations` retourne toutes les installations disponibles.
+
+L'adresse `http://localhost:3000/installations?arrondissement={arrondissement}` retourne toutes les installations pour l'arrondissement envoyé en paramètre. 
+
+L'addresse `http://localhost:3000/installations/{id}` où {id} représente l'id de l'installation à trouver, retourne une seule installation.
 ### A5 (10xp)
 #### Où le trouver?
 Le formulaire est déclaré dans le fichier `~/views/layout.pug` et on peut trouver la requête ajax dans le fichier `~/public/scripts.js`.
@@ -44,23 +48,33 @@ La liste déroulante est visible sur la page `http://localhost:3000/` sous la se
 #### Où le trouver?
 La route est configurée dans le fichier `~/controllers/index.js`.
 
-Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find()` du fichier `~/db/db.js`.
+Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find` du fichier `~/db/db.js`.
 #### Comment le tester?
 L'adresse `http://localhost:3000/mauvaisesconditions.json` retourne une liste JSON de toutes les installations en mauvaise condition.
 ### C2 (10xp)
 #### Où le trouver?
 La route est configurée dans le fichier `~/controllers/index.js`.
 
-Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find()` du fichier `~/db/db.js` et la conversion de format par le biais de la fonction `jsonToXml()` du fichier `~/helpers/format-helper.js`.
+Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find` du fichier `~/db/db.js` et la conversion de format par le biais de la fonction `jsonToXml` du fichier `~/helpers/format-helper.js`.
 #### Comment le tester?
 L'adresse `http://localhost:3000/mauvaisesconditions.xml` retourne une liste XML de toutes les installations en mauvaise condition.
-### C3 (10xp)
+### C3 (5xp)
 #### Où le trouver?
 La route est configurée dans le fichier `~/controllers/index.js`.
 
-Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find()` du fichier `~/db/db.js` et la conversion de format par le biais de la fonction `jsonToCsv()` du fichier 
+Le fichier `~/models/installation.js` s'occuppe de faire la recherche par le biais de la fonction `find` du fichier `~/db/db.js` et la conversion de format par le biais de la fonction `jsonToCsv` du fichier 
 #### Comment le tester?
 L'adresse `http://localhost:3000/mauvaisesconditions.csv` retourne une liste CSV de toutes les installations en mauvaise condition.
+### D1 (15xp)
+#### Où le trouver?
+La route est configurée dans le fichier `~/controllers/index.js`, l'opération de modification est effectuée par la fonction `updateInstallation` du fichier `~/db/db.js`.
+#### Comment le tester?
+Envoyer une requête HTTP `PUT` à l'addresse `http://localhost:3000/installations/{id}` où {id} représente l'id de la glissade à modifier, avec un body contenant les champs à modifier. Le schéma de l'objet JSON à envoyer dans le body de la requête est disponible dans le fichier `~/controllers/schemas/change-single-installation.json`.
+### D2 (5xp)
+#### Où le trouver?
+La route est configurée dans le fichier `~/controllers/index.js`, l'opération de suppression est effectuée par la fonction `deleteInstalaltion` du fichier `~/db/db.js`.
+#### Comment le tester?
+Envoyer une requête HTTP `DELETE` à l'addresse `http://localhost:3000/installations/{id}` où {id} représente l'id de la glissade à supprimer.
 ### F1 (20xp)
 #### Où le trouver?
 La configuration pour le déploiement sur Heroku se retrouve dans le fichier `~/config.js`

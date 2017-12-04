@@ -19,7 +19,7 @@ var http = require('http');
 var xmlToJson = require('../helpers/format-helpers.js').xmlToJson;
 var trimEntries = require('../helpers/sanitize-entries.js').trim;
 var db = require('../db/db.js');
-var _ = require('underscore');
+var _ = require('lodash');
 
 /* Fetch all rinks via HTTP request according to
 *  options set in config

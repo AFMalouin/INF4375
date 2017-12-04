@@ -2,6 +2,7 @@ var config = require('../config.js');
 var express = require('express');
 var raml2html = require('raml2html');
 var jsonschema = require('jsonschema');
+var _ = require('lodash');
 var installation = require('../models/installation.js');
 var changeInstallationSchema = require('./schemas/change-single-installation.json');
 var router = express.Router();
@@ -111,27 +112,36 @@ router.put('/installations/:id', function(req, res, next) {
   var id =  req.params.id;
   var data = req.body;
 
-  var result = jsonschema.validate(data, changeInstallationSchema);
-
-  if (result.errors.length !== 0) {
+  if (_.isEqual(data, {})) {
+    // Body is empty object {}
     err = new Error('Requête mal formée.');
     err.status = 400;
     res.status(err.status);
     res.render('error', {error: err});
   } else {
-    installation.updateSlide(null, id, data, function(err, object){
-      if (err){
-        if (!err.status) {
-          err.status = 500;
+    var result = jsonschema.validate(data, changeInstallationSchema);
+    
+    if (result.errors.length !== 0) {
+      // Body does not follow schema
+      err = new Error('Requête mal formée.');
+      err.status = 400;
+      res.status(err.status);
+      res.render('error', {error: err});
+    } else {
+      installation.updateSlide(null, id, data, function(err, object){
+        if (err){
+          if (!err.status) {
+            err.status = 500;
+          }
+          res.status(err.status);
+          res.render('error', {error: err});
+        } else {
+          res.setHeader('Content-Type', 'application/json');
+          res.status(200);
+          res.send(JSON.stringify(object.value));
         }
-        res.status(err.status);
-        res.render('error', {error: err});
-      } else {
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200);
-        res.send(JSON.stringify(object.value));
-      }
-    });
+      });
+    }
   }
 });
 

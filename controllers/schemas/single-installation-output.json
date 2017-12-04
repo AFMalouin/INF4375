@@ -10,16 +10,20 @@
       "type": "string",
       "required": true
     },
-    "name": {
+    "nom": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
       "type": "string",
       "required": true
     },
     "condition": {
-      "type": "number",
+      "type": "string",
       "required": true
     },
-    "borough": {
-      "type": "number",
+    "arrondissement": {
+      "type": "string",
       "required": true
     }
   }

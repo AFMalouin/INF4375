@@ -2,7 +2,7 @@ var xml2js = require('xml2js');
 var csv = require('csvtojson');
 var js2xmlparser = require('js2xmlparser');
 var json2csv = require('json2csv');
-var _ = require('underscore');
+var _ = require('lodash');
 
 /* Convert a group of XML data into an array of JSON
 * Params

@@ -25,6 +25,12 @@ function search(route) {
     if (xhr.readyState === 4) {
       if (xhr.status === 200) {
         var installations = JSON.parse(xhr.responseText);
+
+        // If a single installation is returned, put it in
+        // an array so we can iterate
+        if (!Array.isArray(installations)) {
+          installations = [installations];
+        }
         var trHTML = '<thead><tr><th>Type d\'installation</th><th>Nom</th><th>Description</th><th>Arrondissement</th><th>Addresse</th><th>Condition</th></tr></thead><tbody>';
         $.each(installations, function (i, installation) {
           trHTML += '<tr><td>' 
@@ -39,7 +45,7 @@ function search(route) {
         $('#search-results').html(trHTML)
                             .css('visibility','');
       } else {
-        alert('Erreur');
+        alert('Erreur ' + xhr.status + " : " + xhr.statusText);
       }
     }
   };

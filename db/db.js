@@ -1,7 +1,7 @@
 var config = require('../config.js');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
-var _ = require('underscore');
+var _ = require('lodash');
 var sortJson = require('../helpers/sortJson.js').sortJson;
 
 var _db;
