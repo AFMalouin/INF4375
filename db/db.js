@@ -13,8 +13,7 @@ getDb = function() {
 
 exports.connectToServer = function(callback) {
   // reference: https://stackoverflow.com/a/24634454
-  MongoClient.connect( config.db.heroku, function( err, db ) {
-  //MongoClient.connect( config.db.local.address, function( err, db ) {
+  MongoClient.connect(config.db.local.address, function( err, db ) {
     if (err) {
       logger.log(err, 500);
       callback(err);
@@ -268,11 +267,8 @@ var internalDeleteOne = function (err, collection, query, callback){
     logger.log(err, 500);
     callback(err);
   } else {
-    console.log("avant");
     collection.deleteOne(query, function(err, object) {
-      console.log("apres!");
       if (err) {
-        console.log("err");
         logger.log(err, 500);
         callback(err);
       } else if (object.deletedCount === 0) {

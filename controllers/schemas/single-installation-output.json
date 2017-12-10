@@ -25,6 +25,10 @@
     "arrondissement": {
       "type": "string",
       "required": true
+    },
+    "addresse": {
+      "type": "string",
+      "required": true
     }
   }
 }

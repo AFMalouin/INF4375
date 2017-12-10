@@ -79,4 +79,4 @@ Envoyer une requête HTTP `DELETE` à l'addresse `http://localhost:3000/installa
 #### Où le trouver?
 La configuration pour le déploiement sur Heroku se retrouve dans le fichier `~/config.js`
 #### Comment le tester?
-L'application est disponible sur Heroku à l'adresse `https://agile-earth-61766.herokuapp.com/`
+L'application est disponible sur Heroku à l'adresse `https://inf4375-arnaud.herokuapp.com/`

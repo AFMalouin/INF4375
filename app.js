@@ -50,11 +50,6 @@ db.connectToServer(function(err) {
     res.render('error');
   });
 
-  fetchAllData(null, function(err){
-    if (err) {
-      log(err);
-    }
-  });
   // set cron everyday at midnight
   var rule = new scheduler.RecurrenceRule();
   rule.hour = config.cron.hour;

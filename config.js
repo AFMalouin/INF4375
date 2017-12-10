@@ -5,22 +5,22 @@ config.db = {};
 // For use when setting up the projet on localhost
 config.db.local = {
   port : '27017',
-  name : 'tp1',
+  name : 'tp1'
 };
 config.db.local.address = 'mongodb://localhost:' + config.db.local.port + '/' + config.db.local.name;
 
 // For use when deploying on Heroku
 config.db.heroku = {
-  port : '31715',
-  name : 'heroku_wdk79gdg',
+  port : '51163',
+  name : 'heroku_903wz95w'
 };
-config.db.heroku.address = 'mongodb://heroku_wdk79gdg:avd3h0ujeb8bbrjjk4nbectibo@ds231715.mlab.com:' + config.db.heroku.port + '/' + config.db.heroku.name;
+config.db.heroku.address = 'mongodb://arnaud:jberger@ds151163.mlab.com:' + config.db.heroku.port + '/' + config.db.heroku.name;
 
 config.db.mainCollection = 'installations';
 
 config.cron = {
   hour : 00,
-  minute : 00 
+  minute : 00
 };
 
 config.devPort = '3000';

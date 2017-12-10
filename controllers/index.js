@@ -56,7 +56,7 @@ router.get('/installations', function(req, res, next) {
   var params = {};
 
   if (req.query.arrondissement) {
-    params.Arrondissement = req.query.arrondissement;
+    params.arrondissement = req.query.arrondissement;
   }
 
   var options = {
