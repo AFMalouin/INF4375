@@ -13,8 +13,8 @@ getDb = function() {
 
 exports.connectToServer = function(callback) {
   // reference: https://stackoverflow.com/a/24634454
-  //MongoClient.connect( config.db.heroku, function( err, db ) {
-  MongoClient.connect( config.db.local.address, function( err, db ) {
+  MongoClient.connect( config.db.heroku, function( err, db ) {
+  //MongoClient.connect( config.db.local.address, function( err, db ) {
     if (err) {
       logger.log(err, 500);
       callback(err);
