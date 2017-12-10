@@ -5,6 +5,7 @@ var jsonschema = require('jsonschema');
 var _ = require('lodash');
 var installation = require('../models/installation.js');
 var changeInstallationSchema = require('./schemas/change-single-installation.json');
+var logger = require('../helpers/logger.js');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -42,7 +43,7 @@ router.get('/doc', function(req, res, next) {
     res.send(html);
   }, function(err) {
     // Error
-    console.log(err);
+    logger.log(err);
     if (!err.status) {
       err.status = 500;
     }
@@ -108,7 +109,7 @@ router.get('/installations/:id', function(req, res, next) {
   });
 });
 
-router.put('/installations/:id', function(req, res, next) {
+router.patch('/installations/:id', function(req, res, next) {
   var id =  req.params.id;
   var data = req.body;
 

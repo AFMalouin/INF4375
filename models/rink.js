@@ -17,9 +17,10 @@
 var config = require('../config.js');
 var http = require('http');
 var xmlToJson = require('../helpers/format-helpers.js').xmlToJson;
+var _ = require('lodash');
 var trimEntries = require('../helpers/sanitize-entries.js').trim;
 var db = require('../db/db.js');
-var _ = require('lodash');
+var logger = require('../helpers/logger.js');
 
 /* Fetch all rinks via HTTP request according to
 *  options set in config
@@ -32,10 +33,9 @@ exports.fetchData = function(err, callback) {
   var options = config.getRinksOptions;
   
   var request = http.get(options, function (result) {
-
     if (result.statusCode !== 200) {
       err = new Error('HTTP Error: ' + result.statusCode);
-      console.log(err);
+      logger.log(err, result.statusCode);
       callback(err);
     } else {
       var chunks = [];
@@ -54,31 +54,27 @@ exports.fetchData = function(err, callback) {
 
         var data = chunks.join('');
         xmlToJson(null, attributes, data, function(err, parsedEntries) {
-          if (err) {
-            callback(err);
-          } else {
-            normalize(err, parsedEntries, function(err, normalizedDocuments) {
-              if (err) {
-                callback(err);
+          normalize(err, parsedEntries, function(err, normalizedDocuments) {
+            if (err) {
+              logger.log(err, 500);
+              callback(err);
+            } else {
+              if (normalizedDocuments.length > 0) {
+                db.save(err, normalizedDocuments, function (err) {
+                  callback(err);
+                });
+              } else {
+                callback(null);
               }
-              else {
-                if (normalizedDocuments.length > 0) {
-                  db.save(err, normalizedDocuments, function (err) {
-                    callback(err);
-                  });
-                } else {
-                  callback(null);
-                }
-              }
-            });
-          }
+            }
+          });
         });
       });
     }
   });
   
   request.on('error', function (err) {
-    console.log(err);
+    logger.log(err, 500);
     callback(err);
   });
 
@@ -92,31 +88,41 @@ exports.fetchData = function(err, callback) {
 *   callback: Returns error object and array of normalized documents
 */
 var normalize = function(err, data, callback) {
-  try {
-    var normalizedDocuments = [];
-    var remainingDocuments = data.length;
-  
-    _.each(data, function(element, index, list) {
-      var normalizedDocument = {
-        type : config.types.rink,
-        nom : element.nom,
-        description: 'N/A',
-        condition : element.condition,
-        arrondissement : element.arrondissement.nom_arr,
-        addresse: 'N/A'
-      };
-  
-      normalizedDocuments.push(normalizedDocument);
-      remainingDocuments -= 1;
-  
-      if (remainingDocuments == 0) {
-        trimEntries(err, normalizedDocuments, function(err, data) {
-          callback(err, data);
-        });
-      }
-    });
-  } catch(err) {
-    console.log(err);
+  if (err) {
+    logger.log(err, 500);
     callback(err);
+  } else {
+    try {
+      var normalizedDocuments = [];
+      var remainingDocuments = data.length;
+    
+      _.each(data, function(element, index, list) {
+        var normalizedDocument = {
+          type : config.types.rink,
+          nom : element.nom,
+          description: 'N/A',
+          condition : element.condition,
+          arrondissement : element.arrondissement.nom_arr,
+          addresse: 'N/A'
+        };
+    
+        normalizedDocuments.push(normalizedDocument);
+        remainingDocuments -= 1;
+    
+        if (remainingDocuments == 0) {
+          trimEntries(err, normalizedDocuments, function(err, data) {
+            if (err) {
+              logger.log(err);
+              callback(err);
+            } else {
+              callback(err, data);
+            }
+          });
+        }
+      });
+    } catch(err) {
+      logger.log(err, 500);
+      callback(err);
+    }
   }
 }

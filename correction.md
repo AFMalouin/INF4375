@@ -4,7 +4,7 @@
 #### Où le trouver?
 Les requêtes HTTP sont effectuées dans les fichiers `~/models/rink.js`, `~/models/slide.js` et `~/models/pool.js`, le résultat de ces requêtes est converti dans le fichier format-helpers.js et les données sont storés par la fonction save du fichier db.js dans une db nommée `tp1` contenant une collection nommée `installations`.
 #### Comment le tester?
-La récupération des données se fait au démarrage de l'application ainsi que chaque jour à minuit.
+À partir du répertoire racine, excécuter la commande `node .\fetch-data-script.js`
 
 Il est possible de récupérer les données récupérés directement de la base do données Mongo avec les commandes suivantes dans la console Mongo:
 
@@ -69,7 +69,7 @@ L'adresse `http://localhost:3000/mauvaisesconditions.csv` retourne une liste CSV
 #### Où le trouver?
 La route est configurée dans le fichier `~/controllers/index.js`, l'opération de modification est effectuée par la fonction `updateInstallation` du fichier `~/db/db.js`.
 #### Comment le tester?
-Envoyer une requête HTTP `PUT` à l'addresse `http://localhost:3000/installations/{id}` où {id} représente l'id de la glissade à modifier, avec un body contenant les champs à modifier. Le schéma de l'objet JSON à envoyer dans le body de la requête est disponible dans le fichier `~/controllers/schemas/change-single-installation.json`.
+Envoyer une requête HTTP `PATCH` à l'addresse `http://localhost:3000/installations/{id}` où {id} représente l'id de la glissade à modifier, avec un body contenant les champs à modifier. Le schéma de l'objet JSON à envoyer dans le body de la requête est disponible dans le fichier `~/controllers/schemas/change-single-installation.json`.
 ### D2 (5xp)
 #### Où le trouver?
 La route est configurée dans le fichier `~/controllers/index.js`, l'opération de suppression est effectuée par la fonction `deleteInstalaltion` du fichier `~/db/db.js`.

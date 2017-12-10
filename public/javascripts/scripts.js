@@ -31,7 +31,12 @@ function search(route) {
         if (!Array.isArray(installations)) {
           installations = [installations];
         }
-        var trHTML = '<thead><tr><th>Type d\'installation</th><th>Nom</th><th>Description</th><th>Arrondissement</th><th>Addresse</th><th>Condition</th></tr></thead><tbody>';
+        var trHTML = '<thead><tr><th>Type d\'installation</th>'
+          + '<th>Nom</th>' 
+          + '<th>Description</th>'
+          + '<th>Arrondissement</th>'
+          + '<th>Addresse</th>' 
+          + '<th>Condition</th></tr></thead><tbody>';
         $.each(installations, function (i, installation) {
           trHTML += '<tr><td>' 
             + installation.type + '</td><td>' 

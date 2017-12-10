@@ -3,6 +3,7 @@ var csv = require('csvtojson');
 var js2xmlparser = require('js2xmlparser');
 var json2csv = require('json2csv');
 var _ = require('lodash');
+var logger = require('./logger.js');
 
 /* Convert a group of XML data into an array of JSON
 * Params
@@ -13,18 +14,21 @@ var _ = require('lodash');
 *   callback: Returns error object and array of JSON data
 */
 exports.xmlToJson = function(err, attributes, data, callback) {
-  var parser = new xml2js.Parser({explicitArray : false});
-  
-  parser.parseString(data, function (err, result) {
-    if (err) {
-      console.log(err);
-      callback(err);
-    } else {
-      var jsonEntries = 
-        result[attributes.sequenceName][attributes.elementName];
-      callback(err, jsonEntries);
-    }
-  });
+  if (err) {
+    logger.log(err, 500);
+  } else {
+    var parser = new xml2js.Parser({explicitArray : false});
+    
+    parser.parseString(data, function (err, result) {
+      if (err) {
+        logger.log(err, 500);
+      } else {
+        var jsonEntries = 
+          result[attributes.sequenceName][attributes.elementName];
+        callback(err, jsonEntries);
+      }
+    });
+  }
 }
 
 /* Convert a list of CSV data into an array of JSON
@@ -34,20 +38,25 @@ exports.xmlToJson = function(err, attributes, data, callback) {
 *   callback: Returns error object and array of JSON data
 */
 exports.csvToJson = function(err, data, callback) {
-  var jsonEntries = [];
-  csv()
-  .fromString(data)
-  .on('json', (jsonobj) => {
-    jsonEntries.push(jsonobj);
-  })
-  .on('done', (err) => {
-    if (err) {
-      console.log(err);
-      callback(err);
-    } else {
-      callback(err, jsonEntries);
-    }
-  });  
+  if (err) {
+    logger.log(err, 500);
+    callback(err);
+  } else {
+    var jsonEntries = [];
+    csv()
+    .fromString(data)
+    .on('json', (jsonobj) => {
+      jsonEntries.push(jsonobj);
+    })
+    .on('done', (err) => {
+      if (err) {
+        logger.log(err, 500);
+        callback(err);
+      } else {
+        callback(err, jsonEntries);
+      }
+    });  
+  }
 }
 
 /* Convert an array of JSON data into group of XML
@@ -57,6 +66,10 @@ exports.csvToJson = function(err, data, callback) {
 *   callback: Returns error object and group of XML data
 */
 exports.jsonToXml = function(err, data, callback) {
+  if (err) {
+    logger.log(err, 500);
+    callback(err);
+  } else {
     var options = {
       declaration: {
           include: true,
@@ -67,10 +80,11 @@ exports.jsonToXml = function(err, data, callback) {
       var xmlEntries = js2xmlparser.parse('installation', data, options);
       callback(err, xmlEntries);
     } catch(err) {
-      console.log(err);
+      logger.log(err, 500);
       callback(err);
     }
   }
+}
 
 /* Convert an array of JSON data into a list of CSV
 * Params
@@ -79,12 +93,17 @@ exports.jsonToXml = function(err, data, callback) {
 *   callback: Returns error object and lsit of CSV data
 */
 exports.jsonToCsv = function(err, data, callback) {
-  try {
-    fields = _.keys(data[0]);
-    var csvEntries = json2csv({data: data, fields: fields});
-    callback(err, csvEntries);
-  } catch(err) {
-    console.log(err);
+  if (err) {
+    logger.log(err, 500);
     callback(err);
+  } else {
+    try {
+      fields = _.keys(data[0]);
+      var csvEntries = json2csv({data: data, fields: fields});
+      callback(err, csvEntries);
+    } catch(err) {
+      logger.log(err, 500);
+      callback(err);
+    }
   }
 }

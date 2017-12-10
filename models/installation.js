@@ -2,7 +2,7 @@ var config = require('../config.js');
 var db = require('../db/db.js');
 var jsonToXml = require('../helpers/format-helpers.js').jsonToXml;
 var jsonToCsv = require('../helpers/format-helpers.js').jsonToCsv;
-
+var logger = require('../helpers/logger.js');
 
 /* Finds and converts installations according to options
 * Params
@@ -14,11 +14,12 @@ var jsonToCsv = require('../helpers/format-helpers.js').jsonToCsv;
 exports.find = function(err, options, callback) {
   db.find(err, options.params, options.fields, function(err, data) {
     if (err) {
+      logger.log(err, 500);
       callback(err);
     } else {
       if (options.format === 'xml') {
         jsonToXml(err, data, function(err, result) {
-          if (err) {
+          if (err){
             callback(err);
           } else {
             callback(err, result);
@@ -40,7 +41,7 @@ exports.find = function(err, options, callback) {
         }
       } else {
         err = new Error('Format de fichier non reconnu: ' + options.format);
-        console.log(err);
+        logger.log(err, 500);
         callback(err);
       }
     }
@@ -55,6 +56,9 @@ exports.find = function(err, options, callback) {
 */
 exports.deleteSlide = function (err, id, callback) {
     db.deleteInstallation(err, id, config.types.slide, function (err, object){
+      if (err) {
+        logger.log(err, 500);
+      }
       callback(err);
     });
   }
@@ -70,7 +74,7 @@ exports.deleteSlide = function (err, id, callback) {
 exports.updateSlide = function (err, id, modifications, callback) {
   db.updateInstallation(err, id, config.types.slide, modifications, function (err, object){
     if (err) {
-      callback(err);
+      logger.log(err, 500);
     } else {
       callback(err, object);
     }
